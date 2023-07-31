@@ -1,7 +1,13 @@
-﻿using OfficeOpenXml;
+﻿using System.ComponentModel;
+using System.Reflection;
+using OfficeOpenXml;
+using WorkLibary;
 
 var fi = new FileInfo(@"A.xlsx");
 var users = new List<User>();
+var startRow = 2;
+var maxRow = 100;
+
 using (var p = new ExcelPackage(fi))
 {
     var ws = p.Workbook.Worksheets["Sheet"];
@@ -20,55 +26,87 @@ using (var p = new ExcelPackage(fi))
 
 using (var p = new ExcelPackage())
 {
-    var column = 1;
-    var row = 1;
-    
-    foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
+    // foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
+    foreach (var day in new[] {Days.Tuesday})
     {
+        var column = 1;
+        var row = 1;
         var ws = p.Workbook.Worksheets.Add(day.ToString());
-        foreach (var user in users)
-        {
-            ws.Cells[row, column++].Value = user.Name;
-            ws.Cells[row, column++].Value = user.Orders[(int) day].OrderTime;
-            ws.Cells[row, column++].Value = user.Orders[(int) day].Lunch;
-            ws.Cells[row, column++].Value = user.Orders[(int) day].HotFood;
-            ws.Cells[row, column++].Value = user.Orders[(int) day].Soup;
-            ws.Cells[row, column++].Value = user.Orders[(int) day].Bakery;
-            ws.Cells[row, column++].Value = user.Orders[(int) day].WillCoffee;
-            
-            // ws.Cells[row++, column].Value = user.Name;
-            // ws.Cells[row++, column].Value = user.Orders[(int) day].OrderTime;
-            // ws.Cells[row++, column].Value = user.Orders[(int) day].Lunch;
-            // ws.Cells[row++, column].Value = user.Orders[(int) day].HotFood;
-            // ws.Cells[row++, column].Value = user.Orders[(int) day].Soup;
-            // ws.Cells[row++, column].Value = user.Orders[(int) day].Bakery;
-            // ws.Cells[row++, column].Value = user.Orders[(int) day].WillCoffee;
-        }
-
-        row++;
-        column = 1;
+        var hotFoods = GetHotFoodsDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
+        SetNames(ws);
+        
+        ws.Cells[1, 2].Value = "Утренние заказы";
+        SetHotFoodCount(ws, 2, OrderTime.Morning, hotFoods);
+        
+        ws.Cells[1, 3].Value = "Дневные заказы";
+        SetHotFoodCount(ws, 3, OrderTime.Day, hotFoods);
+        
+        ws.Cells[1, 4].Value = "Вечерние заказы";
+        SetHotFoodCount(ws, 4, OrderTime.Night, hotFoods);
     }
     
     p.SaveAs(new FileInfo(@"AAA.xlsx"));
 }
 
+void SetNames(ExcelWorksheet ws)
+{
+    var row = startRow;
+    
+    // HotFood
+    ws.Cells[row++, 1].Value = HotFood.Pork.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.Beef.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.Chicken.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.Shrimp.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.FalafelBeans.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.FalafelChickpea.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.FalafelBuckwheat.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.KebabChicken.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
+}
+
+void SetHotFoodCount(ExcelWorksheet ws, int columnTo, OrderTime orderTime,
+    Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods)
+{
+    for (var row = startRow; row < maxRow; row++)
+    {
+        var value = User.GetHotFood((string) ws.Cells[row, 1].Value);
+        if (value is null)
+            return;
+        
+        ws.Cells[row, columnTo].Value = GetFoodValue(hotFoods, (HotFood) User.GetHotFood((string) ws.Cells[row, 1].Value), orderTime);
+    }
+}
+
+int GetFoodValue(Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods, HotFood food, OrderTime day)
+{
+    if (hotFoods.ContainsKey(food) && hotFoods[food].ContainsKey(day))
+        return hotFoods[food][day];
+    return 0;
+}
+
+Dictionary<HotFood, Dictionary<OrderTime, int>> GetHotFoodsDictionary(IEnumerable<User> usersEnumerable, int orderIndex)
+{
+    var hotFoods = new Dictionary<HotFood, Dictionary<OrderTime, int>>();
+    foreach (var user in usersEnumerable)
+    {
+        var order = user.Orders[orderIndex];
+        var food = order.HotFood;
+        
+        if (food is not null)
+        {
+            if (!hotFoods.ContainsKey((HotFood) food))
+                hotFoods.Add((HotFood) food, new Dictionary<OrderTime, int>());
+            if (!hotFoods[(HotFood) food].ContainsKey(order.OrderTime))
+                hotFoods[(HotFood) food].Add(order.OrderTime, 0);
+
+            hotFoods[(HotFood) food][order.OrderTime]++;
+        }
+    }
+
+    return hotFoods;
+}
+
 Console.WriteLine();
-
-public enum Days
-{
-    Tuesday = 0,
-    Wednesday = 1,
-    Thursday = 2,
-    Friday = 3
-}
-
-public enum OrderTime
-{
-    Morning,
-    Day,
-    Night,
-    Default
-}
 
 public enum Lunch
 {
@@ -87,33 +125,24 @@ public enum Lunch
     Prince2, 
 }
 
-public enum Soup
-{
-    SpinachSoup, 
-    MushroomSoup, 
-    PumpkinSoup, 
-}
-
-public enum HotFood
-{
-    Pork, 
-    Beef, 
-    Chicken, 
-    Shrimp, 
-    FalafelBeans, 
-    FalafelChickpea, 
-    FalafelBuckwheat, 
-    KebabChicken, 
-    KebabPork, 
-}
-
 public enum Bakery
 {
+    [Description(StringConstants.AppleStrudel)]
     AppleStrudel, 
+    
+    [Description(StringConstants.CarrotCake)]
     CarrotCake, 
+    
+    [Description(StringConstants.ChocolateCroissant)]
     ChocolateCroissant, 
+    
+    [Description(StringConstants.CottageCheesePie)]
     CottageCheesePie, 
+    
+    [Description(StringConstants.CottageCheeseAndCherryPie)]
     CottageCheeseAndCherryPie, 
+    
+    [Description(StringConstants.RoseWithApplesAndCherries)]
     RoseWithApplesAndCherries, 
 }
 
@@ -121,7 +150,7 @@ public class User
 {
     public readonly string Name;
 
-    public readonly List<Order> Orders = new();
+    public readonly Order[] Orders = new Order[5];
 
     public User(string name)
     {
@@ -136,10 +165,10 @@ public class User
         var soupReady = GetSoup((string) soup);
         var bakeryReady = GetBakery((string) bakery);
         
-        Orders.Add(new Order(time, lunchReady, hotFoodReady, soupReady, bakeryReady, ((string) willCoffee) == "Да"));
+        Orders[0] = new Order(time, lunchReady, hotFoodReady, soupReady, bakeryReady, ((string) willCoffee) == "Да");
     }
 
-    private Bakery? GetBakery(string bakery)
+    public static Bakery? GetBakery(string bakery)
     {
         return bakery switch
         {
@@ -153,7 +182,7 @@ public class User
         };
     }
 
-    private Soup? GetSoup(string soup)
+    public static Soup? GetSoup(string soup)
     {
         return soup switch
         {
@@ -164,7 +193,7 @@ public class User
         };
     }
 
-    private HotFood? GetHotFood(string hotFood)
+    public static HotFood? GetHotFood(string hotFood)
     {
         return hotFood switch
         {
@@ -231,5 +260,35 @@ public class Order
         Soup = soup;
         Bakery = bakery;
         WillCoffee = willCoffee;
+    }
+}
+
+public static class EnumExt
+{
+    public static string GetDescription<T>(this T enumerationValue)
+        where T : struct
+    {
+        Type type = enumerationValue.GetType();
+        if (!type.IsEnum)
+        {
+            throw new ArgumentException("EnumerationValue must be of Enum type", "enumerationValue");
+        }
+
+        //Tries to find a DescriptionAttribute for a potential friendly name
+        //for the enum
+        MemberInfo[] memberInfo = type.GetMember(enumerationValue.ToString());
+        if (memberInfo != null && memberInfo.Length > 0)
+        {
+            object[] attrs = memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+            if (attrs != null && attrs.Length > 0)
+            {
+                //Pull out the description value
+                return ((DescriptionAttribute) attrs[0]).Description;
+            }
+        }
+
+        //If we have no description attribute, just return the ToString of the enum
+        return enumerationValue.ToString();
     }
 }
