@@ -1,5 +1,7 @@
 using System.ComponentModel;
 
+namespace WorkLibary;
+
 public enum Days
 {
     [Description("Вторник")]

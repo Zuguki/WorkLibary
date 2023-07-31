@@ -1,5 +1,6 @@
 using System.ComponentModel;
-using WorkLibary;
+
+namespace WorkLibary;
 
 public enum Bakery
 {

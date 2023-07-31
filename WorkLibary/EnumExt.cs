@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.Reflection;
 
+namespace WorkLibary;
+
 public static class EnumExt
 {
     public static string GetDescription<T>(this T enumerationValue)
