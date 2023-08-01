@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {}
+    "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {}
   },
   "projects": {
-    "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {
+    "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
+        "projectUniqueName": "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
         "projectName": "WorkLibary",
-        "projectPath": "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
-        "packagesPath": "/Users/goodgod/.nuget/packages/",
-        "outputPath": "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/",
+        "projectPath": "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
+        "packagesPath": "/home/flash/.nuget/packages/",
+        "outputPath": "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/goodgod/.nuget/NuGet/NuGet.Config"
+          "/home/flash/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -38,6 +38,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aspose.Words": {
+              "target": "Package",
+              "version": "[23.7.0, )"
+            },
             "DotNetCore.NPOI": {
               "target": "Package",
               "version": "[1.2.3, )"
@@ -49,6 +53,22 @@
             "Microsoft.Office.Interop.Word": {
               "target": "Package",
               "version": "[15.0.4797.1004, )"
+            },
+            "Spire.Doc": {
+              "target": "Package",
+              "version": "[11.7.25, )"
+            },
+            "Spire.Office": {
+              "target": "Package",
+              "version": "[8.7.0, )"
+            },
+            "Syncfusion.DocIO.Net.Core": {
+              "target": "Package",
+              "version": "[22.2.5, )"
+            },
+            "Xceed.Words.NET": {
+              "target": "Package",
+              "version": "[2.5.23177.2123, )"
             }
           },
           "imports": [
@@ -67,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/7.0.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/7.0.105/RuntimeIdentifierGraph.json"
         }
       }
     }
