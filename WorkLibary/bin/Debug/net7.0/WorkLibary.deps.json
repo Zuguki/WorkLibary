@@ -9,13 +9,7 @@
       "WorkLibary/1.0.0": {
         "dependencies": {
           "Aspose.Words": "23.7.0",
-          "DotNetCore.NPOI": "1.2.3",
-          "EPPlus": "7.0.0-preview2",
-          "Microsoft.Office.Interop.Word": "15.0.4797.1004",
-          "Spire.Doc": "11.7.25",
-          "Spire.Office": "8.7.0",
-          "Syncfusion.DocIO.Net.Core": "22.2.5",
-          "Xceed.Words.NET": "2.5.23177.2123"
+          "EPPlus": "7.0.0-preview2"
         },
         "runtime": {
           "WorkLibary.dll": {}
@@ -37,54 +31,6 @@
           "lib/net6.0/Aspose.Words.dll": {
             "assemblyVersion": "23.7.0.0",
             "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "DotNetCore.NPOI/1.2.3": {
-        "dependencies": {
-          "DotNetCore.NPOI.Core": "1.2.3",
-          "DotNetCore.NPOI.OpenXml4Net": "1.2.3",
-          "DotNetCore.NPOI.OpenXmlFormats": "1.2.3"
-        },
-        "runtime": {
-          "lib/netstandard2.0/NPOI.OOXML.dll": {
-            "assemblyVersion": "1.2.3.0",
-            "fileVersion": "1.2.3.0"
-          }
-        }
-      },
-      "DotNetCore.NPOI.Core/1.2.3": {
-        "dependencies": {
-          "SharpZipLib": "1.2.0",
-          "System.Drawing.Common": "7.0.0",
-          "System.Text.Encoding.CodePages": "7.0.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/NPOI.dll": {
-            "assemblyVersion": "1.2.3.0",
-            "fileVersion": "1.2.3.0"
-          }
-        }
-      },
-      "DotNetCore.NPOI.OpenXml4Net/1.2.3": {
-        "dependencies": {
-          "DotNetCore.NPOI.Core": "1.2.3"
-        },
-        "runtime": {
-          "lib/netstandard2.0/NPOI.OpenXml4Net.dll": {
-            "assemblyVersion": "1.2.3.0",
-            "fileVersion": "1.2.3.0"
-          }
-        }
-      },
-      "DotNetCore.NPOI.OpenXmlFormats/1.2.3": {
-        "dependencies": {
-          "DotNetCore.NPOI.OpenXml4Net": "1.2.3"
-        },
-        "runtime": {
-          "lib/netstandard2.0/NPOI.OpenXmlFormats.dll": {
-            "assemblyVersion": "1.2.3.0",
-            "fileVersion": "1.2.3.0"
           }
         }
       },
@@ -225,19 +171,11 @@
           }
         }
       },
-      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "Microsoft.NETCore.Platforms/3.1.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
-      "Microsoft.Office.Interop.Word/15.0.4797.1004": {
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.Office.Interop.Word.dll": {
-            "assemblyVersion": "15.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
       "Microsoft.Win32.Registry/4.7.0": {
         "dependencies": {
-          "System.Security.AccessControl": "6.0.0",
+          "System.Security.AccessControl": "4.7.0",
           "System.Security.Principal.Windows": "4.7.0"
         }
       },
@@ -254,14 +192,6 @@
             "assetType": "runtime",
             "assemblyVersion": "7.0.0.0",
             "fileVersion": "7.0.22.51805"
-          }
-        }
-      },
-      "SharpZipLib/1.2.0": {
-        "runtime": {
-          "lib/netstandard2.0/ICSharpCode.SharpZipLib.dll": {
-            "assemblyVersion": "1.2.0.246",
-            "fileVersion": "1.2.0.246"
           }
         }
       },
@@ -298,92 +228,6 @@
           }
         }
       },
-      "Spire.Doc/11.7.25": {
-        "dependencies": {
-          "System.Drawing.Common": "7.0.0",
-          "System.Security.Cryptography.Xml": "6.0.0",
-          "System.Security.Permissions": "6.0.0",
-          "System.Text.Encoding.CodePages": "7.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/Spire.Doc.dll": {
-            "assemblyVersion": "11.7.25.0",
-            "fileVersion": "11.7.25.3360"
-          }
-        }
-      },
-      "Spire.Office/8.7.0": {
-        "dependencies": {
-          "Spire.Doc": "11.7.25",
-          "System.Drawing.Common": "7.0.0",
-          "System.Security.Cryptography.Xml": "6.0.0",
-          "System.Security.Permissions": "6.0.0",
-          "System.Text.Encoding.CodePages": "7.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/Spire.Barcode.dll": {
-            "assemblyVersion": "7.2.1.0",
-            "fileVersion": "7.2.1.9360"
-          },
-          "lib/net6.0/Spire.Email.dll": {
-            "assemblyVersion": "6.6.0.0",
-            "fileVersion": "6.6.0.10360"
-          },
-          "lib/net6.0/Spire.Pdf.dll": {
-            "assemblyVersion": "9.7.0.0",
-            "fileVersion": "9.7.0.1360"
-          },
-          "lib/net6.0/Spire.Presentation.dll": {
-            "assemblyVersion": "8.7.0.0",
-            "fileVersion": "8.7.0.6350"
-          },
-          "lib/net6.0/Spire.XLS.dll": {
-            "assemblyVersion": "13.7.0.0",
-            "fileVersion": "13.7.0.5350"
-          }
-        }
-      },
-      "Syncfusion.Compression.Net.Core/22.2.5": {
-        "runtime": {
-          "lib/net7.0/Syncfusion.Compression.Portable.dll": {
-            "assemblyVersion": "22.2.5.0",
-            "fileVersion": "22.2.5.0"
-          }
-        }
-      },
-      "Syncfusion.DocIO.Net.Core/22.2.5": {
-        "dependencies": {
-          "Syncfusion.Compression.Net.Core": "22.2.5",
-          "Syncfusion.Licensing": "22.2.5",
-          "Syncfusion.OfficeChart.Net.Core": "22.2.5",
-          "System.Text.Encoding.CodePages": "7.0.0"
-        },
-        "runtime": {
-          "lib/net7.0/Syncfusion.DocIO.Portable.dll": {
-            "assemblyVersion": "22.2.5.0",
-            "fileVersion": "22.2.5.0"
-          }
-        }
-      },
-      "Syncfusion.Licensing/22.2.5": {
-        "runtime": {
-          "lib/net7.0/Syncfusion.Licensing.dll": {
-            "assemblyVersion": "22.2.5.0",
-            "fileVersion": "22.2.5.0"
-          }
-        }
-      },
-      "Syncfusion.OfficeChart.Net.Core/22.2.5": {
-        "dependencies": {
-          "Syncfusion.Compression.Net.Core": "22.2.5"
-        },
-        "runtime": {
-          "lib/net7.0/Syncfusion.OfficeChart.Portable.dll": {
-            "assemblyVersion": "22.2.5.0",
-            "fileVersion": "22.2.5.0"
-          }
-        }
-      },
       "System.Drawing.Common/7.0.0": {
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "7.0.0"
@@ -406,25 +250,17 @@
       "System.Formats.Asn1/7.0.0": {},
       "System.IO/4.3.0": {
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0",
           "System.Text.Encoding": "4.3.0",
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.IO.Packaging/4.5.0": {
-        "runtime": {
-          "lib/netstandard2.0/System.IO.Packaging.dll": {
-            "assemblyVersion": "4.0.3.0",
-            "fileVersion": "4.6.26515.6"
-          }
-        }
-      },
       "System.Memory/4.5.3": {},
       "System.Reflection/4.3.0": {
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.IO": "4.3.0",
           "System.Reflection.Primitives": "4.3.0",
@@ -449,18 +285,23 @@
       },
       "System.Reflection.Primitives/4.3.0": {
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
         }
       },
       "System.Runtime/4.3.0": {
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.NETCore.Targets": "1.1.0"
         }
       },
-      "System.Security.AccessControl/6.0.0": {},
+      "System.Security.AccessControl/4.7.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "3.1.0",
+          "System.Security.Principal.Windows": "4.7.0"
+        }
+      },
       "System.Security.Cryptography.Pkcs/7.0.2": {
         "dependencies": {
           "System.Formats.Asn1": "7.0.0"
@@ -480,34 +321,10 @@
           }
         }
       },
-      "System.Security.Cryptography.Xml/6.0.0": {
-        "dependencies": {
-          "System.Security.AccessControl": "6.0.0",
-          "System.Security.Cryptography.Pkcs": "7.0.2"
-        },
-        "runtime": {
-          "lib/net6.0/System.Security.Cryptography.Xml.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
-      "System.Security.Permissions/6.0.0": {
-        "dependencies": {
-          "System.Security.AccessControl": "6.0.0",
-          "System.Windows.Extensions": "6.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/System.Security.Permissions.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
       "System.Security.Principal.Windows/4.7.0": {},
       "System.Text.Encoding/4.3.0": {
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
         }
@@ -521,64 +338,9 @@
       },
       "System.Threading.Tasks/4.3.0": {
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
-        }
-      },
-      "System.Windows.Extensions/6.0.0": {
-        "dependencies": {
-          "System.Drawing.Common": "7.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/System.Windows.Extensions.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/net6.0/System.Windows.Extensions.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
-          }
-        }
-      },
-      "Xceed.Document.NET/2.5.23177.2123": {
-        "dependencies": {
-          "System.Drawing.Common": "7.0.0",
-          "System.IO.Packaging": "4.5.0",
-          "Xceed.Pdf": "2.5.23177.2123"
-        },
-        "runtime": {
-          "lib/net5.0/Xceed.Document.NET5.dll": {
-            "assemblyVersion": "2.5.23177.21230",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Xceed.Pdf/2.5.23177.2123": {
-        "dependencies": {
-          "System.Drawing.Common": "7.0.0"
-        },
-        "runtime": {
-          "lib/net5.0/Xceed.PDF.NET5.dll": {
-            "assemblyVersion": "2.5.23176.9000",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Xceed.Words.NET/2.5.23177.2123": {
-        "dependencies": {
-          "Xceed.Document.NET": "2.5.23177.2123",
-          "Xceed.Pdf": "2.5.23177.2123"
-        },
-        "runtime": {
-          "lib/net5.0/Xceed.Words.NET5.dll": {
-            "assemblyVersion": "2.5.23177.21230",
-            "fileVersion": "0.0.0.0"
-          }
         }
       }
     }
@@ -595,34 +357,6 @@
       "sha512": "sha512-85gkCewomqpoNqeAUUxTWACLXy1lmFqRESpL5+atUSAVNFbjIeOFdWkf1NYjCgm+UREwVFhYnNUzwqBSCXdXEw==",
       "path": "aspose.words/23.7.0",
       "hashPath": "aspose.words.23.7.0.nupkg.sha512"
-    },
-    "DotNetCore.NPOI/1.2.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-agXbYDkOvovMYBNqTcRAr6jrTtUXGYzVNdS9Yxy4PDZa8tBQiIeAD+54/Jdsc+3/Mln1L1Yj+SciO1TYwljcdQ==",
-      "path": "dotnetcore.npoi/1.2.3",
-      "hashPath": "dotnetcore.npoi.1.2.3.nupkg.sha512"
-    },
-    "DotNetCore.NPOI.Core/1.2.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-2OgRNy4OpVOIwnkU8KPJs6itTE2xFpIFkFmci/iAnea/ZPTzQJrmuNPVKlfdn1csOI8ecFWES8Tk2ZmRSJjl5w==",
-      "path": "dotnetcore.npoi.core/1.2.3",
-      "hashPath": "dotnetcore.npoi.core.1.2.3.nupkg.sha512"
-    },
-    "DotNetCore.NPOI.OpenXml4Net/1.2.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-gELhZln7TuLn2he3r0mx1qnuPLjEgTW5z8RTFnEexSQ+r1smDqSSryXNEhwUvj1beBUxTjKq2RrwkrWwLgtScA==",
-      "path": "dotnetcore.npoi.openxml4net/1.2.3",
-      "hashPath": "dotnetcore.npoi.openxml4net.1.2.3.nupkg.sha512"
-    },
-    "DotNetCore.NPOI.OpenXmlFormats/1.2.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-3v0cJA+4rclcoW+hVuU4oYu1wNYv/jEIqQghLDMHqlviyOVxnuruAUDvsgENjiZM0iWFhkK0N/ZsXvH+qGvObw==",
-      "path": "dotnetcore.npoi.openxmlformats/1.2.3",
-      "hashPath": "dotnetcore.npoi.openxmlformats.1.2.3.nupkg.sha512"
     },
     "EPPlus/7.0.0-preview2": {
       "type": "package",
@@ -708,12 +442,12 @@
       "path": "microsoft.io.recyclablememorystream/2.2.1",
       "hashPath": "microsoft.io.recyclablememorystream.2.2.1.nupkg.sha512"
     },
-    "Microsoft.NETCore.Platforms/1.1.0": {
+    "Microsoft.NETCore.Platforms/3.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
-      "path": "microsoft.netcore.platforms/1.1.0",
-      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+      "sha512": "sha512-z7aeg8oHln2CuNulfhiLYxCVMPEwBl3rzicjvIX+4sUuCwvXw5oXQEtbiU2c0z4qYL5L3Kmx0mMA/+t/SbY67w==",
+      "path": "microsoft.netcore.platforms/3.1.0",
+      "hashPath": "microsoft.netcore.platforms.3.1.0.nupkg.sha512"
     },
     "Microsoft.NETCore.Targets/1.1.0": {
       "type": "package",
@@ -721,13 +455,6 @@
       "sha512": "sha512-aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg==",
       "path": "microsoft.netcore.targets/1.1.0",
       "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
-    },
-    "Microsoft.Office.Interop.Word/15.0.4797.1004": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-lavTOrMGK/o/t3+gGr7JuVrL8XDdnS0DwPLcYv/StOiysXO4L0C36IXTVtEJo1Mh9Aoxo9a8dgGcPi+faTlv0g==",
-      "path": "microsoft.office.interop.word/15.0.4797.1004",
-      "hashPath": "microsoft.office.interop.word.15.0.4797.1004.nupkg.sha512"
     },
     "Microsoft.Win32.Registry/4.7.0": {
       "type": "package",
@@ -743,61 +470,12 @@
       "path": "microsoft.win32.systemevents/7.0.0",
       "hashPath": "microsoft.win32.systemevents.7.0.0.nupkg.sha512"
     },
-    "SharpZipLib/1.2.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-zvWa/L02JHNatdtjya6Swpudb2YEHaOLHL1eRrqpjm71iGRNUNONO5adUF/9CHbSJbzhELW1UoH4NGy7n7+3bQ==",
-      "path": "sharpziplib/1.2.0",
-      "hashPath": "sharpziplib.1.2.0.nupkg.sha512"
-    },
     "SkiaSharp/2.80.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-CiQwnDzG+1JNGzjAN9G/9n/lJgUVA/NPOFgSlEtu6c7qQ0O7P1tMjrXp/+PtWfX0xyyY9ABsFAZK2kW34U7r/A==",
       "path": "skiasharp/2.80.1",
       "hashPath": "skiasharp.2.80.1.nupkg.sha512"
-    },
-    "Spire.Doc/11.7.25": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-MpLagZuL8gegCCDprO7/CU3aCUwzMnNsqaCVnvT4Ts69yDH48+keVCZzSz/I7R71tBLnsijiHlmDFF6PxaZUhw==",
-      "path": "spire.doc/11.7.25",
-      "hashPath": "spire.doc.11.7.25.nupkg.sha512"
-    },
-    "Spire.Office/8.7.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-08X/MsPCBMIVHCVT7iGYG/TAUzoy8kwOqpPVe0WZKUXDlPYzZa5OVouGMpW/uspmt+3sHYvPW+4KdgGIpm1yJw==",
-      "path": "spire.office/8.7.0",
-      "hashPath": "spire.office.8.7.0.nupkg.sha512"
-    },
-    "Syncfusion.Compression.Net.Core/22.2.5": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-vGw54UY68cgXDkTOFrFyPu0Qy++zHDFFYni0NOmRNdCJsDIYCmhYIr4+uJc9x3b/s0FhBZvw38gDUhOIKNKUpQ==",
-      "path": "syncfusion.compression.net.core/22.2.5",
-      "hashPath": "syncfusion.compression.net.core.22.2.5.nupkg.sha512"
-    },
-    "Syncfusion.DocIO.Net.Core/22.2.5": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-mpTkkZa8j9ZamMQJ18LTl5ktTzK1dzCeHeoA/k5mKnkN3jLdo0mUZF/35Rgo5ZYCBL80AQ23oEppFu90UU9sjg==",
-      "path": "syncfusion.docio.net.core/22.2.5",
-      "hashPath": "syncfusion.docio.net.core.22.2.5.nupkg.sha512"
-    },
-    "Syncfusion.Licensing/22.2.5": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-2E/0g9UCZh5LT7RI/lNTyG2pftQg+kWuZ+7jg825X0Vf2k29RsDh/sHFZd04rZoIaEFM7e3Ay972vkgrzDG4VA==",
-      "path": "syncfusion.licensing/22.2.5",
-      "hashPath": "syncfusion.licensing.22.2.5.nupkg.sha512"
-    },
-    "Syncfusion.OfficeChart.Net.Core/22.2.5": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-oLToO1rQ3Q96XqN7GcELj4HRBdCAjPnKko6CR9l8LZS6mkmA3MBD2Z/5OexwldmN8F9jCJNYiPDS/KUNP1po7w==",
-      "path": "syncfusion.officechart.net.core/22.2.5",
-      "hashPath": "syncfusion.officechart.net.core.22.2.5.nupkg.sha512"
     },
     "System.Drawing.Common/7.0.0": {
       "type": "package",
@@ -819,13 +497,6 @@
       "sha512": "sha512-3qjaHvxQPDpSOYICjUoTsmoq5u6QJAFRUITgeT/4gqkF1bajbSmb1kwSxEA8AHlofqgcKJcM8udgieRNhaJ5Cg==",
       "path": "system.io/4.3.0",
       "hashPath": "system.io.4.3.0.nupkg.sha512"
-    },
-    "System.IO.Packaging/4.5.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-OjtW5pGp1E7KE3ontBrzy+nSFJCM6pcbVDdo3gg4DauTfdtZKdeKvMVlADF4fSY+OfXWUp4qCvOSxIltt37LbA==",
-      "path": "system.io.packaging/4.5.0",
-      "hashPath": "system.io.packaging.4.5.0.nupkg.sha512"
     },
     "System.Memory/4.5.3": {
       "type": "package",
@@ -869,12 +540,12 @@
       "path": "system.runtime/4.3.0",
       "hashPath": "system.runtime.4.3.0.nupkg.sha512"
     },
-    "System.Security.AccessControl/6.0.0": {
+    "System.Security.AccessControl/4.7.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-AUADIc0LIEQe7MzC+I0cl0rAT8RrTAKFHl53yHjEUzNVIaUlhFY11vc2ebiVJzVBuOzun6F7FBA+8KAbGTTedQ==",
-      "path": "system.security.accesscontrol/6.0.0",
-      "hashPath": "system.security.accesscontrol.6.0.0.nupkg.sha512"
+      "sha512": "sha512-JECvTt5aFF3WT3gHpfofL2MNNP6v84sxtXxpqhLBCcDRzqsPBmHhQ6shv4DwwN2tRlzsUxtb3G9M3763rbXKDg==",
+      "path": "system.security.accesscontrol/4.7.0",
+      "hashPath": "system.security.accesscontrol.4.7.0.nupkg.sha512"
     },
     "System.Security.Cryptography.Pkcs/7.0.2": {
       "type": "package",
@@ -882,20 +553,6 @@
       "sha512": "sha512-xhFNJOcQSWhpiVGLLBQYoxAltQSQVycMkwaX1z7I7oEdT9Wr0HzSM1yeAbfoHaERIYd5s6EpLSOLs2qMchSKlA==",
       "path": "system.security.cryptography.pkcs/7.0.2",
       "hashPath": "system.security.cryptography.pkcs.7.0.2.nupkg.sha512"
-    },
-    "System.Security.Cryptography.Xml/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-puJ4UCh9JVRwOCyCIcq71JY6Axr8Sp8E2GjTIU1Fj8hm4+oX6NEoyGFGa/+pBG8SrVxbQPSj7hvtaREyTHHsmw==",
-      "path": "system.security.cryptography.xml/6.0.0",
-      "hashPath": "system.security.cryptography.xml.6.0.0.nupkg.sha512"
-    },
-    "System.Security.Permissions/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-T/uuc7AklkDoxmcJ7LGkyX1CcSviZuLCa4jg3PekfJ7SU0niF0IVTXwUiNVP9DSpzou2PpxJ+eNY2IfDM90ZCg==",
-      "path": "system.security.permissions/6.0.0",
-      "hashPath": "system.security.permissions.6.0.0.nupkg.sha512"
     },
     "System.Security.Principal.Windows/4.7.0": {
       "type": "package",
@@ -938,34 +595,6 @@
       "sha512": "sha512-LbSxKEdOUhVe8BezB/9uOGGppt+nZf6e1VFyw6v3DN6lqitm0OSn2uXMOdtP0M3W4iMcqcivm2J6UgqiwwnXiA==",
       "path": "system.threading.tasks/4.3.0",
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
-    },
-    "System.Windows.Extensions/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
-      "path": "system.windows.extensions/6.0.0",
-      "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
-    },
-    "Xceed.Document.NET/2.5.23177.2123": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-BiOJ/lhwLMeSDuaRF3CqC7RHyRqwO/PAJCmc2G1GLuXhRwJJL3+sJ2+wlHBVOcEcigb0narJAqjF6SpQVUNMHw==",
-      "path": "xceed.document.net/2.5.23177.2123",
-      "hashPath": "xceed.document.net.2.5.23177.2123.nupkg.sha512"
-    },
-    "Xceed.Pdf/2.5.23177.2123": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-R3xOeaxYI72Xpx6J7BjHCALjIDRyyXirp+qzm6aLAYkEYRF2zprYCfiZf4yNnIuDV7yWBJWXt+k3Bks0zSD87g==",
-      "path": "xceed.pdf/2.5.23177.2123",
-      "hashPath": "xceed.pdf.2.5.23177.2123.nupkg.sha512"
-    },
-    "Xceed.Words.NET/2.5.23177.2123": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-9Jxv6m4n3nFFkxt8qd9YoJDlufQ9uVUFEP/JnKvHcCl1sBPKkqzGDYNsM6qGwVDJ4IYyo+vSET1voUVoUf8+Cw==",
-      "path": "xceed.words.net/2.5.23177.2123",
-      "hashPath": "xceed.words.net.2.5.23177.2123.nupkg.sha512"
     }
   }
 }

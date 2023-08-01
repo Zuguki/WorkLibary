@@ -42,33 +42,9 @@
               "target": "Package",
               "version": "[23.7.0, )"
             },
-            "DotNetCore.NPOI": {
-              "target": "Package",
-              "version": "[1.2.3, )"
-            },
             "EPPlus": {
               "target": "Package",
               "version": "[7.0.0-preview2, )"
-            },
-            "Microsoft.Office.Interop.Word": {
-              "target": "Package",
-              "version": "[15.0.4797.1004, )"
-            },
-            "Spire.Doc": {
-              "target": "Package",
-              "version": "[11.7.25, )"
-            },
-            "Spire.Office": {
-              "target": "Package",
-              "version": "[8.7.0, )"
-            },
-            "Syncfusion.DocIO.Net.Core": {
-              "target": "Package",
-              "version": "[22.2.5, )"
-            },
-            "Xceed.Words.NET": {
-              "target": "Package",
-              "version": "[2.5.23177.2123, )"
             }
           },
           "imports": [

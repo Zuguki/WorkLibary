@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-using Microsoft.Office.Interop.Word;
+using Aspose.Words;
 using OfficeOpenXml;
 using WorkLibary;
 using WorkLibary.Lunch;
-using Dictionary = Xceed.Pdf.Atoms.Dictionary;
 
 var fi = new FileInfo(@"A.xlsx");
 var users = new List<User>();
@@ -50,9 +49,91 @@ using (var p = new ExcelPackage())
         GenerateUserOrder(p, column - 1, day);
         GenerateForOrder(p, hotFoods, soups, bakery, lunches, lunchesOnceCount, column, day);
         GenerateForKitchen(p, hotFoods, soups, bakery, lunchesOnceCount, column, day);
+        
+        var documentKitchen = new Document();
+        var documentYandex = new Document();
+        var builderKitchen = new DocumentBuilder(documentKitchen);
+        var builderYandex = new DocumentBuilder(documentYandex);
+        GenerateKitchenDocument(builderKitchen, day);
+        GenerateYandexDocument(builderYandex, day);
+
+        documentKitchen.Save($"A{day}Kitchen.docx");
+        documentYandex.Save($"A{day}Yandex.docx");
     }
 
     p.SaveAs(new FileInfo(@"AAA.xlsx"));
+}
+
+void GenerateYandexDocument(DocumentBuilder builder, Days day)
+{
+    builder.MoveToDocumentStart();
+    builder.Font.Size = 14d;
+    builder.Font.Bold = true;
+    builder.Writeln(day.GetDescription());
+    builder.Font.Bold = false;
+    builder.Font.Size = 12d;
+
+    GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Day, "Трамвайный,15 – день! (12:30) Яндекс", false, true);
+    GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Night, "Трамвайный,15 – вечер! (15:30) Яндекс", false, true);
+}
+
+void GenerateKitchenDocument(DocumentBuilder builder, Days day)
+{
+    builder.MoveToDocumentStart();
+    builder.Font.Size = 14d;
+    builder.Font.Bold = true;
+    builder.Writeln(day.GetDescription());
+    builder.Font.Bold = false;
+    builder.Font.Size = 12d;
+
+    GenerateFor(builder, day, Location.Vosstaniya, OrderTime.Morning, "Восстания,32 – утро!");
+    GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Day, "Трамвайный,15 – день! (12:30)", true);
+    GenerateFor(builder, day, Location.Gagarina, OrderTime.Day, "Гагарина 28, Д – день! (12:30)");
+    GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Night, "Трамвайный,15 – вечер! (15:30)", true);
+    GenerateFor(builder, day, Location.Gagarina, OrderTime.Night, "Гагарина 28, Д – вечер! (15:30)");
+}
+
+void GenerateFor(DocumentBuilder builder, Days day, Location location, OrderTime time, string text,
+    bool withoutLunches = false, bool withoutFood = false)
+{
+    var counter = 1;
+    builder.Font.Bold = true;
+    builder.Writeln(text);
+    builder.Writeln();
+    
+    builder.StartTable();
+    AddToTable(builder, "№", "ФИО", "Что заказали");
+    builder.Font.Bold = false;
+    
+    foreach (var user in users.Where(us => us.Location == location))
+    {
+        var order = user.Orders[(int) day];
+        if (order.OrderTime != time || (withoutLunches && order.Lunch is not null) ||
+            (withoutFood && order.Lunch is null)) 
+            continue;
+
+        var hotFoodText = order.HotFood is not null ? order.HotFood!.Value.GetDescription() : "";
+        var soupText = order.Soup is not null ? order.Soup!.Value.GetDescription() : "";
+        var bakeryText = order.Bakery is not null ? order.Bakery!.Value.GetDescription() : "";
+
+        var right = order.Lunch is not null ? order.Lunch.ToString() : $"{hotFoodText}\t{soupText}\t{bakeryText}";
+        AddToTable(builder, counter.ToString(), user.Name, right);
+        
+        counter++;
+    }
+}
+
+void AddToTable(DocumentBuilder builder, string left, string center, string right)
+{
+    builder.InsertCell();
+    builder.Write(left); 
+    
+    builder.InsertCell();
+    builder.Write(center);
+    
+    builder.InsertCell();
+    builder.Write(right); 
+    builder.EndRow();
 }
 
 void GenerateUserOrder(ExcelPackage p, int column, Days day)
