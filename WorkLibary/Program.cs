@@ -1,5 +1,7 @@
-﻿using OfficeOpenXml;
+﻿using System.Reflection;
+using OfficeOpenXml;
 using WorkLibary;
+using WorkLibary.Lunch;
 
 var fi = new FileInfo(@"A.xlsx");
 var users = new List<User>();
@@ -27,47 +29,112 @@ using (var p = new ExcelPackage())
     // foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
     foreach (var day in new[] {Days.Tuesday})
     {
-        var column = 1;
-        var row = 1;
-        var ws = p.Workbook.Worksheets.Add(day.ToString());
+        var column = 2;
         var hotFoods = GetHotFoodsDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
         var soups = GetSoupsDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
         var bakery = GetBakeryDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
         var lunches = GetLunches(users.Where(user => user.Orders.Length > (int) day), (int) day);
         var lunchesOnceCount = GetLunches2(
             users.Where(user => user.Orders.Length > (int) day && user.Orders[(int) day].Lunch is not null), (int) day);
+        TryReplaceToLunches((int) day);
 
-        SetNames(ws);
-        
-        ws.Cells[1, 2].Value = "Утренние заказы";
-        SetFoodCount(ws, 2, OrderTime.Morning, hotFoods, soups, bakery, lunches);
-        
-        ws.Cells[1, 3].Value = "Дневные заказы";
-        SetFoodCount(ws, 3, OrderTime.Day, hotFoods, soups, bakery, lunches);
-        
-        ws.Cells[1, 4].Value = "Вечерние заказы";
-        SetFoodCount(ws, 4, OrderTime.Night, hotFoods, soups, bakery, lunches);
-
-        ws.Cells[1, 5].Value = "Утренние заказы без наборов";
-        SetLunchOnceCount(ws, 5, OrderTime.Morning, lunchesOnceCount);
-        
-        ws.Cells[1, 6].Value = "Дневные заказы без наборов";
-        SetLunchOnceCount(ws, 6, OrderTime.Day, lunchesOnceCount);
-        
-        ws.Cells[1, 7].Value = "Вечерние заказы без наборов";
-        SetLunchOnceCount(ws, 7, OrderTime.Night, lunchesOnceCount);
-
-        // ws.Cells[1, 5].Value = "Утренние наборы";
-        // SetLunchesCount(ws, 5, OrderTime.Morning, lunches);
-        //
-        // ws.Cells[1, 6].Value = "Дневные наборы";
-        // SetLunchesCount(ws, 6, OrderTime.Day, lunches);
-        //
-        // ws.Cells[1, 7].Value = "Вечерние наборы";
-        // SetLunchesCount(ws, 7, OrderTime.Night, lunches);
+        GenerateForOrder(p, hotFoods, soups, bakery, lunches, lunchesOnceCount, column, day);
+        GenerateForKitchen(p, hotFoods, soups, bakery, lunchesOnceCount, column, day);
     }
     
     p.SaveAs(new FileInfo(@"AAA.xlsx"));
+}
+
+void GenerateForKitchen(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
+    Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
+    Dictionary<string, Dictionary<OrderTime, int>> lunchesOnceCount,
+    int column, Days day)
+{
+        var ws = p.Workbook.Worksheets.Add(day + " Kitchen");
+        ws.Cells[1, 1].Value = day.GetDescription();
+        ws.Cells[1, 1].Style.Font.Bold = true;
+        SetNames(ws);
+        
+        ws.Cells[1, column].Value = "Утро для кухни";
+        SetSumToColumn(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "День для кухни";
+        SetSumToColumn(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "Вечер для кухни";
+        SetSumToColumn(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "Итого для кухни";
+        SetSumToColumn(ws,  column++, null, hotFoods, soups, bakery, lunchesOnceCount);
+}
+
+void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
+    Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
+    Dictionary<string, Dictionary<OrderTime, int>> lunches,
+    Dictionary<string, Dictionary<OrderTime, int>> lunchesOnceCount,
+    int column, Days day)
+{
+        var ws = p.Workbook.Worksheets.Add(day.ToString());
+        SetNames(ws);
+        
+        ws.Cells[1, column].Value = "Утренние заказы";
+        SetFoodCount(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunches);
+        
+        ws.Cells[1, column].Value = "Дневные заказы";
+        SetFoodCount(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunches);
+        
+        ws.Cells[1, column].Value = "Вечерние заказы";
+        SetFoodCount(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunches);
+
+        ws.Cells[1, column].Value = "Утренние заказы без наборов";
+        SetLunchOnceCount(ws, column++, OrderTime.Morning, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "Дневные заказы без наборов";
+        SetLunchOnceCount(ws, column++, OrderTime.Day, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "Вечерние заказы без наборов";
+        SetLunchOnceCount(ws, column++, OrderTime.Night, lunchesOnceCount);
+
+        ws.Cells[1, column].Value = "Утро для кухни";
+        SetSumToColumn(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "День для кухни";
+        SetSumToColumn(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "Вечер для кухни";
+        SetSumToColumn(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunchesOnceCount);
+        
+        ws.Cells[1, column].Value = "Итого для кухни";
+        SetSumToColumn(ws,  column++, null, hotFoods, soups, bakery, lunchesOnceCount);
+}
+
+// TODO: Test
+void TryReplaceToLunches(int orderIndex)
+{
+    foreach (var user in users)
+    {
+        var ourtype = typeof(Lunch);
+        var list = Assembly.GetAssembly(ourtype)?.GetTypes()
+                .Where(type => type.IsSubclassOf(ourtype));
+
+        var orders = user.Orders[orderIndex];
+        if (orders.Lunch is not null)
+            continue;
+
+        foreach (var type in list)
+        {
+            var lunch = (Lunch) Activator.CreateInstance(type)!;
+            if (orders.HotFood == lunch.HotFood
+                && orders.Soup == lunch.Soup
+                && orders.Bakery == lunch.Bakery)
+            {
+                orders.HotFood = null;
+                orders.Soup = null;
+                orders.Bakery = null;
+                orders.Lunch = lunch;
+            }
+        }
+    }
 }
 
 void SetNames(ExcelWorksheet ws)
@@ -115,6 +182,34 @@ void SetNames(ExcelWorksheet ws)
     ws.Cells[row++, 1].Value = StringConstants.Vegan3;
 }
 
+void SetSumToColumn(ExcelWorksheet ws, int columnTo, OrderTime? orderTime,
+    Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
+    Dictionary<Soup, Dictionary<OrderTime, int>> soups,
+    Dictionary<Bakery, Dictionary<OrderTime, int>> bakeries,
+    Dictionary<string, Dictionary<OrderTime, int>> lunches)
+{
+    for (var row = startRow; row < maxRow; row++)
+    {
+        var lunchValue = (string) ws.Cells[row, 1].Value;
+        if (lunchValue is null)
+            return;
+
+        var hotFood = User.GetHotFood(lunchValue);
+        var soup = User.GetSoup(lunchValue);
+        var bakery = User.GetBakery(lunchValue);
+
+        if (hotFood is not null)
+            ws.Cells[row, columnTo].Value = GetDictValue(hotFoods, (HotFood) hotFood, orderTime) +
+                                            GetDictValue(lunches, lunchValue, orderTime);
+        if (soup is not null)
+            ws.Cells[row, columnTo].Value = GetDictValue(soups, (Soup) soup, orderTime) +
+                                            GetDictValue(lunches, lunchValue, orderTime);
+        if (bakery is not null)
+            ws.Cells[row, columnTo].Value = GetDictValue(bakeries, (Bakery) bakery, orderTime) +
+                                            GetDictValue(lunches, lunchValue, orderTime);
+    }
+}
+
 void SetFoodCount(ExcelWorksheet ws, int columnTo, OrderTime orderTime,
     Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
     Dictionary<Soup, Dictionary<OrderTime, int>> soups,
@@ -160,17 +255,21 @@ void SetLunchOnceCount(ExcelWorksheet ws, int columnTo, OrderTime orderTime,
     {
         var value = (string) ws.Cells[row, 1].Value;
         if (value is null)
-            continue;
+            return;
 
         ws.Cells[row, columnTo].Value = GetDictValue(lunches, value, orderTime);
     }
 }
 
-int GetDictValue<T>(Dictionary<T, Dictionary<OrderTime, int>> dictionary, T tValue, OrderTime day) 
+int GetDictValue<T>(Dictionary<T, Dictionary<OrderTime, int>> dictionary, T tValue, OrderTime? day) 
     where T : notnull
 {
-    if (dictionary.ContainsKey(tValue) && dictionary[tValue].ContainsKey(day))
-        return dictionary[tValue][day];
+    if (dictionary.ContainsKey(tValue) && day is not null && dictionary[tValue].ContainsKey((OrderTime) day))
+        return dictionary[tValue][(OrderTime) day];
+    if (day is null)
+        return GetDictValue(dictionary, tValue, OrderTime.Morning) +
+               GetDictValue(dictionary, tValue, OrderTime.Day) +
+               GetDictValue(dictionary, tValue, OrderTime.Night);
     return 0;
 }
 
