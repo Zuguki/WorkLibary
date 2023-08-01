@@ -30,4 +30,10 @@ public enum HotFood
     
     [Description(StringConstants.KebabPork)]
     KebabPork, 
+    
+    [Description(StringConstants.MeetBallsCheese)]
+    MeetBallsCheese,
+    
+    [Description(StringConstants.MeetBallsMushroom)]
+    MeetBallsMushroom,
 }

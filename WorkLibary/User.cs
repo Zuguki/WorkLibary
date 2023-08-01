@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using WorkLibary.Lunch;
 
 namespace WorkLibary;
@@ -6,11 +7,14 @@ public class User
 {
     public readonly string Name;
 
-    public readonly Order[] Orders = new Order[5];
+    public readonly Location Location;
 
-    public User(string name)
+    public readonly List<Order> Orders = new();
+
+    public User(string name, object location)
     {
         Name = name;
+        Location = GetLocation((string) location);
     }
 
     public void AddOrder(object date, object lunch, object hotFood, object soup, object bakery, object willCoffee)
@@ -21,7 +25,7 @@ public class User
         var soupReady = GetSoup((string) soup);
         var bakeryReady = GetBakery((string) bakery);
         
-        Orders[0] = new Order(time, lunchReady, hotFoodReady, soupReady, bakeryReady, ((string) willCoffee) == "Да");
+        Orders.Add(new Order(time, lunchReady, hotFoodReady, soupReady, bakeryReady, ((string) willCoffee) == "Да"));
     }
 
     public static Bakery? GetBakery(string bakery)
@@ -62,6 +66,8 @@ public class User
             StringConstants.FalafelBuckwheat => HotFood.FalafelBuckwheat,
             StringConstants.KebabChicken => HotFood.KebabChicken,
             StringConstants.KebabPork => HotFood.KebabPork,
+            StringConstants.MeetBallsCheese => HotFood.MeetBallsCheese,
+            StringConstants.MeetBallsMushroom => HotFood.MeetBallsMushroom,
             _ => null,
         };
     }
@@ -81,8 +87,8 @@ public class User
             StringConstants.Vegan1 => new Vegan1(),
             StringConstants.Vegan2 => new Vegan2(),
             StringConstants.Vegan3 => new Vegan3(),
-            // StringConstants.Prince1 => ,
-            // StringConstants.Prince2 => Lunch.Prince2,
+            StringConstants.Prince1 => new Prince1(),
+            StringConstants.Prince2 => new Prince2(),
             _ => null
         };
     }
@@ -97,4 +103,26 @@ public class User
             _ => OrderTime.Default
         };
     }
+
+    private Location GetLocation(string location)
+    {
+        return location switch
+        {
+            StringConstants.Gagarina => Location.Gagarina,
+            StringConstants.Vosstaniya => Location.Vosstaniya,
+            _ => Location.Tramvainaya
+        };
+    }
+}
+
+public enum Location
+{
+    [Description(StringConstants.Gagarina)]
+    Gagarina,
+    
+    [Description(StringConstants.Tramvainaya)]
+    Tramvainaya,
+    
+    [Description(StringConstants.Vosstaniya)]
+    Vosstaniya
 }

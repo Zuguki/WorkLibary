@@ -11,12 +11,18 @@ var maxRow = 100;
 using (var p = new ExcelPackage(fi))
 {
     var ws = p.Workbook.Worksheets["Sheet"];
-    var rows = 42;
+    var rows = 100;
     for (var row = 2; row < rows; row++)
     {
-        var user = new User((string) ws.Cells[row, 3].Value);
+        var user = new User((string) ws.Cells[row, 3].Value, ws.Cells[row, 32].Value);
         user.AddOrder(ws.Cells[row, 5].Value, ws.Cells[row, 6].Value, ws.Cells[row, 7].Value, ws.Cells[row, 8].Value,
             ws.Cells[row, 9].Value, ws.Cells[row, 10].Value);
+        user.AddOrder(ws.Cells[row, 12].Value, ws.Cells[row, 13].Value, ws.Cells[row, 14].Value, 
+            ws.Cells[row, 15].Value, ws.Cells[row, 16].Value, ws.Cells[row, 17].Value);
+        user.AddOrder(ws.Cells[row, 19].Value, ws.Cells[row, 20].Value, ws.Cells[row, 21].Value, 
+            ws.Cells[row, 22].Value, ws.Cells[row, 23].Value, ws.Cells[row, 24].Value);
+        user.AddOrder(ws.Cells[row, 26].Value, ws.Cells[row, 27].Value, ws.Cells[row, 28].Value, 
+            ws.Cells[row, 29].Value, ws.Cells[row, 30].Value, ws.Cells[row, 31].Value);
 
         users.Add(user);
     }
@@ -26,23 +32,55 @@ using (var p = new ExcelPackage(fi))
 
 using (var p = new ExcelPackage())
 {
-    // foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
-    foreach (var day in new[] {Days.Tuesday})
+    foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
+    // foreach (var day in new[] {Days.Tuesday})
     {
-        var column = 2;
-        var hotFoods = GetHotFoodsDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
-        var soups = GetSoupsDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
-        var bakery = GetBakeryDictionary(users.Where(user => user.Orders.Length > (int) day), (int) day);
-        var lunches = GetLunches(users.Where(user => user.Orders.Length > (int) day), (int) day);
-        var lunchesOnceCount = GetLunches2(
-            users.Where(user => user.Orders.Length > (int) day && user.Orders[(int) day].Lunch is not null), (int) day);
         TryReplaceToLunches((int) day);
-
+        
+        var column = 2;
+        var hotFoods = GetHotFoodsDictionary(users.Where(user => user.Orders.Count > (int) day), (int) day);
+        var soups = GetSoupsDictionary(users.Where(user => user.Orders.Count > (int) day), (int) day);
+        var bakery = GetBakeryDictionary(users.Where(user => user.Orders.Count> (int) day), (int) day);
+        var lunches = GetLunches(users.Where(user => user.Orders.Count > (int) day), (int) day);
+        var lunchesOnceCount = GetLunches2(
+            users.Where(user => user.Orders.Count > (int) day && user.Orders[(int) day].Lunch is not null), (int) day);
+        
+        GenerateUserOrder(p, column - 1, day);
         GenerateForOrder(p, hotFoods, soups, bakery, lunches, lunchesOnceCount, column, day);
         GenerateForKitchen(p, hotFoods, soups, bakery, lunchesOnceCount, column, day);
     }
-    
+
     p.SaveAs(new FileInfo(@"AAA.xlsx"));
+}
+
+void GenerateUserOrder(ExcelPackage p, int column, Days day)
+{
+    var ws = p.Workbook.Worksheets.Add(day + " User");
+
+    ws.Cells[1, 1].Value = "ФИО";
+    ws.Cells[1, 2].Value = "Время доставки";
+    ws.Cells[1, 3].Value = "Закажите набор";
+    ws.Cells[1, 4].Value = "Закажите горячее";
+    ws.Cells[1, 5].Value = "Закажите суп";
+    ws.Cells[1, 6].Value = "Закажите десерт";
+    ws.Cells[1, 7].Value = "Будет ли кофе?";
+    ws.Cells[1, 8].Value = "Локация";
+    
+    var row = startRow;
+    foreach (var user in users)
+    {
+        ws.Cells[row, column++].Value = user.Name;
+        ws.Cells[row, column++].Value = user.Orders[(int) day].OrderTime.GetDescription();
+        ws.Cells[row, column++].Value = user.Orders[(int) day].Lunch?.ToString();
+        ws.Cells[row, column++].Value = user.Orders[(int) day].HotFood?.GetDescription();
+        ws.Cells[row, column++].Value = user.Orders[(int) day].Soup?.GetDescription();
+        ws.Cells[row, column++].Value = user.Orders[(int) day].Bakery?.GetDescription();
+        ws.Cells[row, column++].Value = user.Orders[(int) day].WillCoffee;
+        ws.Cells[row, column++].Value = user.Location;
+
+        row++;
+        column = 1;
+    }
 }
 
 void GenerateForKitchen(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
@@ -151,6 +189,8 @@ void SetNames(ExcelWorksheet ws)
     ws.Cells[row++, 1].Value = HotFood.FalafelBuckwheat.GetDescription();
     ws.Cells[row++, 1].Value = HotFood.KebabChicken.GetDescription();
     ws.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.MeetBallsCheese.GetDescription();
+    ws.Cells[row++, 1].Value = HotFood.MeetBallsMushroom.GetDescription();
     
     // Soup
     ws.Cells[row++, 1].Value = Soup.SpinachSoup.GetDescription();
@@ -180,6 +220,9 @@ void SetNames(ExcelWorksheet ws)
     ws.Cells[row++, 1].Value = StringConstants.Vegan1;
     ws.Cells[row++, 1].Value = StringConstants.Vegan2;
     ws.Cells[row++, 1].Value = StringConstants.Vegan3;
+    
+    ws.Cells[row++, 1].Value = StringConstants.Prince1;
+    ws.Cells[row++, 1].Value = StringConstants.Prince2;
 }
 
 void SetSumToColumn(ExcelWorksheet ws, int columnTo, OrderTime? orderTime,
@@ -396,5 +439,3 @@ Dictionary<HotFood, Dictionary<OrderTime, int>> GetHotFoodsDictionary(IEnumerabl
 
     return hotFoods;
 }
-
-Console.WriteLine();

@@ -8,7 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Aspose.Words" Version="23.7.0" />
+      <PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
       <PackageReference Include="EPPlus" Version="7.0.0-preview2" />
+      <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
+      <PackageReference Include="Spire.Doc" Version="11.7.25" />
+      <PackageReference Include="Spire.Office" Version="8.7.0" />
+      <PackageReference Include="Syncfusion.DocIO.Net.Core" Version="22.2.5" />
+      <PackageReference Include="Xceed.Words.NET" Version="2.5.23177.2123" />
     </ItemGroup>
 
 </Project>

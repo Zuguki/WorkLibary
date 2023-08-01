@@ -12,4 +12,7 @@ public enum Soup
     
     [Description(StringConstants.PumpkinSoup)]
     PumpkinSoup, 
+    
+    [Description("Отсутствует")]
+    Default,
 }

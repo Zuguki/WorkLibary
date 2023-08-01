@@ -40,6 +40,8 @@ public abstract class StringConstants
     public const string FalafelBuckwheat = "Фалафель из гречи с овощами в лаваше";
     public const string KebabChicken = "Люля-кебаб говядина курица с овощами в лаваше";
     public const string KebabPork = "Люля-кебаб говядина свинина с овощами в лаваше";
+    public const string MeetBallsCheese = "фрикадельки, картофельные дольки с сырным соусом";
+    public const string MeetBallsMushroom = "фрикадельки, картофельные дольки с грибным соусом";
     
     // Soup
     public const string SpinachSoup = "Суп-пюре шпинатный";
@@ -53,4 +55,9 @@ public abstract class StringConstants
     public const string CottageCheesePie = "Пирожок с творогом";
     public const string CottageCheeseAndCherryPie = "Пирожок с творогом и вишней";
     public const string RoseWithApplesAndCherries = "Розочка с яблоками и вишней";
+    
+    // Location
+    public const string Gagarina = "Гагарина";
+    public const string Tramvainaya = "Трамвайная";
+    public const string Vosstaniya = "Восстания";
 }

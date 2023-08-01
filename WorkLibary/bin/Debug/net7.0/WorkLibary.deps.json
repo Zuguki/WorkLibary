@@ -8,10 +8,60 @@
     ".NETCoreApp,Version=v7.0": {
       "WorkLibary/1.0.0": {
         "dependencies": {
-          "EPPlus": "7.0.0-preview2"
+          "DotNetCore.NPOI": "1.2.3",
+          "EPPlus": "7.0.0-preview2",
+          "Microsoft.Office.Interop.Word": "15.0.4797.1004"
         },
         "runtime": {
           "WorkLibary.dll": {}
+        }
+      },
+      "DotNetCore.NPOI/1.2.3": {
+        "dependencies": {
+          "DotNetCore.NPOI.Core": "1.2.3",
+          "DotNetCore.NPOI.OpenXml4Net": "1.2.3",
+          "DotNetCore.NPOI.OpenXmlFormats": "1.2.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NPOI.OOXML.dll": {
+            "assemblyVersion": "1.2.3.0",
+            "fileVersion": "1.2.3.0"
+          }
+        }
+      },
+      "DotNetCore.NPOI.Core/1.2.3": {
+        "dependencies": {
+          "SharpZipLib": "1.2.0",
+          "System.Drawing.Common": "7.0.0",
+          "System.Text.Encoding.CodePages": "7.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NPOI.dll": {
+            "assemblyVersion": "1.2.3.0",
+            "fileVersion": "1.2.3.0"
+          }
+        }
+      },
+      "DotNetCore.NPOI.OpenXml4Net/1.2.3": {
+        "dependencies": {
+          "DotNetCore.NPOI.Core": "1.2.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NPOI.OpenXml4Net.dll": {
+            "assemblyVersion": "1.2.3.0",
+            "fileVersion": "1.2.3.0"
+          }
+        }
+      },
+      "DotNetCore.NPOI.OpenXmlFormats/1.2.3": {
+        "dependencies": {
+          "DotNetCore.NPOI.OpenXml4Net": "1.2.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NPOI.OpenXmlFormats.dll": {
+            "assemblyVersion": "1.2.3.0",
+            "fileVersion": "1.2.3.0"
+          }
         }
       },
       "EPPlus/7.0.0-preview2": {
@@ -151,6 +201,14 @@
           }
         }
       },
+      "Microsoft.Office.Interop.Word/15.0.4797.1004": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Office.Interop.Word.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "Microsoft.Win32.SystemEvents/7.0.0": {
         "runtime": {
           "lib/net7.0/Microsoft.Win32.SystemEvents.dll": {
@@ -164,6 +222,14 @@
             "assetType": "runtime",
             "assemblyVersion": "7.0.0.0",
             "fileVersion": "7.0.22.51805"
+          }
+        }
+      },
+      "SharpZipLib/1.2.0": {
+        "runtime": {
+          "lib/netstandard2.0/ICSharpCode.SharpZipLib.dll": {
+            "assemblyVersion": "1.2.0.246",
+            "fileVersion": "1.2.0.246"
           }
         }
       },
@@ -220,6 +286,34 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "DotNetCore.NPOI/1.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-agXbYDkOvovMYBNqTcRAr6jrTtUXGYzVNdS9Yxy4PDZa8tBQiIeAD+54/Jdsc+3/Mln1L1Yj+SciO1TYwljcdQ==",
+      "path": "dotnetcore.npoi/1.2.3",
+      "hashPath": "dotnetcore.npoi.1.2.3.nupkg.sha512"
+    },
+    "DotNetCore.NPOI.Core/1.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2OgRNy4OpVOIwnkU8KPJs6itTE2xFpIFkFmci/iAnea/ZPTzQJrmuNPVKlfdn1csOI8ecFWES8Tk2ZmRSJjl5w==",
+      "path": "dotnetcore.npoi.core/1.2.3",
+      "hashPath": "dotnetcore.npoi.core.1.2.3.nupkg.sha512"
+    },
+    "DotNetCore.NPOI.OpenXml4Net/1.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gELhZln7TuLn2he3r0mx1qnuPLjEgTW5z8RTFnEexSQ+r1smDqSSryXNEhwUvj1beBUxTjKq2RrwkrWwLgtScA==",
+      "path": "dotnetcore.npoi.openxml4net/1.2.3",
+      "hashPath": "dotnetcore.npoi.openxml4net.1.2.3.nupkg.sha512"
+    },
+    "DotNetCore.NPOI.OpenXmlFormats/1.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3v0cJA+4rclcoW+hVuU4oYu1wNYv/jEIqQghLDMHqlviyOVxnuruAUDvsgENjiZM0iWFhkK0N/ZsXvH+qGvObw==",
+      "path": "dotnetcore.npoi.openxmlformats/1.2.3",
+      "hashPath": "dotnetcore.npoi.openxmlformats.1.2.3.nupkg.sha512"
     },
     "EPPlus/7.0.0-preview2": {
       "type": "package",
@@ -305,12 +399,26 @@
       "path": "microsoft.io.recyclablememorystream/2.2.1",
       "hashPath": "microsoft.io.recyclablememorystream.2.2.1.nupkg.sha512"
     },
+    "Microsoft.Office.Interop.Word/15.0.4797.1004": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lavTOrMGK/o/t3+gGr7JuVrL8XDdnS0DwPLcYv/StOiysXO4L0C36IXTVtEJo1Mh9Aoxo9a8dgGcPi+faTlv0g==",
+      "path": "microsoft.office.interop.word/15.0.4797.1004",
+      "hashPath": "microsoft.office.interop.word.15.0.4797.1004.nupkg.sha512"
+    },
     "Microsoft.Win32.SystemEvents/7.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-2nXPrhdAyAzir0gLl8Yy8S5Mnm/uBSQQA7jEsILOS1MTyS7DbmV1NgViMtvV1sfCD1ebITpNwb1NIinKeJgUVQ==",
       "path": "microsoft.win32.systemevents/7.0.0",
       "hashPath": "microsoft.win32.systemevents.7.0.0.nupkg.sha512"
+    },
+    "SharpZipLib/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zvWa/L02JHNatdtjya6Swpudb2YEHaOLHL1eRrqpjm71iGRNUNONO5adUF/9CHbSJbzhELW1UoH4NGy7n7+3bQ==",
+      "path": "sharpziplib/1.2.0",
+      "hashPath": "sharpziplib.1.2.0.nupkg.sha512"
     },
     "System.Drawing.Common/7.0.0": {
       "type": "package",
