@@ -195,39 +195,98 @@ void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, 
     Dictionary<string, Dictionary<OrderTime, int>> lunchesOnceCount,
     int column, Days day)
 {
-        var ws = p.Workbook.Worksheets.Add(day.ToString());
-        SetNames(ws);
-        
-        ws.Cells[1, column].Value = "Утренние заказы";
-        SetFoodCount(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunches);
-        
-        ws.Cells[1, column].Value = "Дневные заказы";
-        SetFoodCount(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunches);
-        
-        ws.Cells[1, column].Value = "Вечерние заказы";
-        SetFoodCount(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunches);
-
-        ws.Cells[1, column].Value = "Утренние заказы без наборов";
-        SetLunchOnceCount(ws, column++, OrderTime.Morning, lunchesOnceCount);
-        
-        ws.Cells[1, column].Value = "Дневные заказы без наборов";
-        SetLunchOnceCount(ws, column++, OrderTime.Day, lunchesOnceCount);
-        
-        ws.Cells[1, column].Value = "Вечерние заказы без наборов";
-        SetLunchOnceCount(ws, column++, OrderTime.Night, lunchesOnceCount);
-
-        ws.Cells[1, column].Value = "Утро с яндексом";
-        SetSumToColumnWithYandex(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunchesOnceCount);
-        
-        ws.Cells[1, column].Value = "День с яндексом";
-        SetSumToColumnWithYandex(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunchesOnceCount);
-        
-        ws.Cells[1, column].Value = "Вечер с яндексом";
-        SetSumToColumnWithYandex(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunchesOnceCount);
-        
-        ws.Cells[1, column].Value = "Итого с яндексом";
-        SetSumToColumnWithYandex(ws,  column++, null, hotFoods, soups, bakery, lunchesOnceCount);
+    var ws = p.Workbook.Worksheets.Add(day + "Order");
+    SetNames(ws);
+    
+         ws.Cells[1, column].Value = "Утренние заказы";
+         SetFoodCountWithoutYandex(ws, column++, OrderTime.Morning, day, hotFoods, soups, bakery);
+         
+         ws.Cells[1, column].Value = "Дневные заказы";
+         SetFoodCountWithoutYandex(ws, column++, OrderTime.Day, day, hotFoods, soups, bakery);
+         
+         ws.Cells[1, column].Value = "Вечерние заказы";
+         SetFoodCountWithoutYandex(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery);
 }
+
+void SetFoodCountWithoutYandex(ExcelWorksheet ws, int column, OrderTime orderTime, Days day,
+    Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
+    Dictionary<Soup, Dictionary<OrderTime, int>> soups,
+    Dictionary<Bakery, Dictionary<OrderTime, int>> bakeries)
+{
+    for (var row = startRow; row < maxRow; row++)
+    {
+        var hotFood = User.GetHotFood((string) ws.Cells[row, 1].Value);
+        if (hotFood is not null)
+        {
+            ws.Cells[row, column].Value = GetDictValue(hotFoods, (HotFood) hotFood, orderTime);
+            continue;
+        }
+
+        var soup = User.GetSoup((string) ws.Cells[row, 1].Value);
+        if (soup is not null)
+        {
+            ws.Cells[row, column].Value = GetDictValue(soups, (Soup) soup, orderTime);
+            continue;
+        }
+        
+        var bakery = User.GetBakery((string) ws.Cells[row, 1].Value);
+        if (bakery is not null)
+        {
+            ws.Cells[row, column].Value = GetDictValue(bakeries, (Bakery) bakery, orderTime);
+            continue;
+        }
+        
+        var lunchTitle = (string) ws.Cells[row, 1].Value;
+        if (lunchTitle is not null)
+        {
+            ws.Cells[row, column].Value = users
+                .Where(us =>
+                    (us.Orders[(int) day].Lunch is not null && us.Location != Location.Tramvainaya &&
+                     us.Orders[(int) day].OrderTime == orderTime))
+                .Count(u => u.Orders[(int) day].Lunch!.Name == lunchTitle);
+        }
+    }
+}
+
+// void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
+//     Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
+//     Dictionary<string, Dictionary<OrderTime, int>> lunches,
+//     Dictionary<string, Dictionary<OrderTime, int>> lunchesOnceCount,
+//     int column, Days day)
+// {
+//         var ws = p.Workbook.Worksheets.Add(day.ToString());
+//         SetNames(ws);
+//         
+//         ws.Cells[1, column].Value = "Утренние заказы";
+//         SetFoodCount(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunches);
+//         
+//         ws.Cells[1, column].Value = "Дневные заказы";
+//         SetFoodCount(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunches);
+//         
+//         ws.Cells[1, column].Value = "Вечерние заказы";
+//         SetFoodCount(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunches);
+//
+//         ws.Cells[1, column].Value = "Утренние заказы без наборов";
+//         SetLunchOnceCount(ws, column++, OrderTime.Morning, lunchesOnceCount);
+//         
+//         ws.Cells[1, column].Value = "Дневные заказы без наборов";
+//         SetLunchOnceCount(ws, column++, OrderTime.Day, lunchesOnceCount);
+//         
+//         ws.Cells[1, column].Value = "Вечерние заказы без наборов";
+//         SetLunchOnceCount(ws, column++, OrderTime.Night, lunchesOnceCount);
+//
+//         ws.Cells[1, column].Value = "Утро с яндексом";
+//         SetSumToColumnWithYandex(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunchesOnceCount);
+//         
+//         ws.Cells[1, column].Value = "День с яндексом";
+//         SetSumToColumnWithYandex(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunchesOnceCount);
+//         
+//         ws.Cells[1, column].Value = "Вечер с яндексом";
+//         SetSumToColumnWithYandex(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunchesOnceCount);
+//         
+//         ws.Cells[1, column].Value = "Итого с яндексом";
+//         SetSumToColumnWithYandex(ws,  column++, null, hotFoods, soups, bakery, lunchesOnceCount);
+// }
 
 // TODO: Test
 void TryReplaceToLunches(int orderIndex)

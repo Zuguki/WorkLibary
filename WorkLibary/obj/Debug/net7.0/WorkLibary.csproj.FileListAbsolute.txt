@@ -66,13 +66,6 @@
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/Debug/net7.0/WorkLibary.pdb
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/Debug/net7.0/WorkLibary.genruntimeconfig.cache
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/Debug/net7.0/ref/WorkLibary.dll
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/NOTICE.TXT
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/NPOI.OOXML.dll
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/NPOI.dll
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/NPOI.OpenXml4Net.dll
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/NPOI.OpenXmlFormats.dll
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/Microsoft.Office.Interop.Word.dll
-/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/ICSharpCode.SharpZipLib.dll
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/Aspose.Words.Pdf2Word.dll
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/Aspose.Words.dll
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/SkiaSharp.dll
@@ -80,3 +73,10 @@
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/win-arm64/native/libSkiaSharp.dll
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/win-x64/native/libSkiaSharp.dll
 /home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/win-x86/native/libSkiaSharp.dll
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/Aspose.Words.Pdf2Word.dll
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/Aspose.Words.dll
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/SkiaSharp.dll
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/osx/native/libSkiaSharp.dylib
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/win-arm64/native/libSkiaSharp.dll
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/win-x64/native/libSkiaSharp.dll
+/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/bin/Debug/net7.0/runtimes/win-x86/native/libSkiaSharp.dll
