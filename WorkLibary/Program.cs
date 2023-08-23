@@ -4,10 +4,10 @@ using WorkLibary;
 using WorkLibary.Builders.Excel;
 using WorkLibary.Lunch;
 
-var fi = new FileInfo(@"A.xlsx");
+var fileInfo = new FileInfo(@"A.xlsx");
 var users = new List<User>();
 
-var reader = new ExcelReader(new ExcelPackage(fi).Workbook.Worksheets["Sheet"]);
+var reader = new ExcelReader(new ExcelPackage(fileInfo).Workbook.Worksheets["Sheet"]);
 foreach (var userAndOrders in reader.ReadAllLines())
 {
     var userAndLocation = userAndOrders[0].Split(":;:");
@@ -31,6 +31,7 @@ var builder = new ExcelBuilder();
 foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
 {
     TryReplaceToLunches(day);
+    GenerateUserOrder(day, builder);
     GenerateForOrder(day, builder, new [] {Location.Tramvainaya});
     GenerateForKitchen(day, builder, new [] {Location.Tramvainaya});
     
@@ -97,6 +98,38 @@ void GenerateForOrder(Days day, ExcelBuilder excelBuilder, Location[]? yandexLoc
     }
 }
 
+void GenerateUserOrder(Days day, ExcelBuilder excelBuilder)
+{
+    var column = 1;
+    var pageBuilder = excelBuilder
+        .AddPage(day.GetDescription() + " Заказы")
+        
+        .AddCell(1, 1, "ФИО")
+        .AddCell(1, 2, "Время доставки")
+        .AddCell(1, 3, "Закажите набор")
+        .AddCell(1, 4, "Закажите горячее")
+        .AddCell(1, 5, "Закажите суп")
+        .AddCell(1, 6, "Закажите десерт")
+        .AddCell(1, 7, "Будет ли кофе")
+        .AddCell(1, 8, "Локация");
+        
+    var row = 2;
+    foreach (var user in users)
+    {
+        pageBuilder
+            .AddCell(row, column++, user.Name ?? "")
+            .AddCell(row, column++, user.Orders[(int) day].OrderTime.GetDescription() ?? "")
+            .AddCell(row, column++, user.Orders[(int) day].Lunch?.ToString() ?? "")
+            .AddCell(row, column++, user.Orders[(int) day].HotFood?.GetDescription() ?? "" )
+            .AddCell(row, column++, user.Orders[(int) day].Soup?.GetDescription() ?? "")
+            .AddCell(row, column++, user.Orders[(int) day].Bakery?.GetDescription() ?? "")
+            .AddCell(row, column++, user.Orders[(int) day].WillCoffee ? "Да" : "Нет")
+            .AddCell(row++, column++, user.Location.GetDescription() ?? "");
+
+        column = 1;
+    }
+}
+
 int GetFoodCountInLunch(string product, OrderTime orderTime, Days day, Location[]? yandexLocations = null)
 {
     var dayIndex = (int) day;
@@ -125,7 +158,6 @@ int GetFoodCountInLunch(string product, OrderTime orderTime, Days day, Location[
     return 0;
 }
 
-// TODO: Change with other yandex
 int GetFoodCount(string product, OrderTime orderTime, Days day, Location[]? yandexLocations = null)
 {
     var hotFood = User.GetHotFood(product);
@@ -149,9 +181,6 @@ int GetFoodCount(string product, OrderTime orderTime, Days day, Location[]? yand
             .Count(u => u.Orders[(int) day].Bakery!.Value.GetDescription() == product);
 
     // Lunch
-    // Console.WriteLine(users.Count(user =>
-    //     user.Orders[(int) day].Lunch is not null && user.Orders[(int) day].OrderTime == OrderTime.Morning &&
-    //     (yandexLocations is null || yandexLocations.All(location => location == user.Location))));
     return users
         .Where(us =>
             us.Orders[(int) day].Lunch is not null && us.Orders[(int) day].OrderTime == orderTime &&
@@ -184,36 +213,5 @@ void TryReplaceToLunches(Days day)
                 orders.Lunch = lunch;
             }
         }
-    }
-}
-
-// TODO: Append
-void GenerateUserOrder(ExcelPackage p, int column, Days day)
-{
-    var ws = p.Workbook.Worksheets.Add(day + " Заказы");
-
-    ws.Cells[1, 1].Value = "ФИО";
-    ws.Cells[1, 2].Value = "Время доставки";
-    ws.Cells[1, 3].Value = "Закажите набор";
-    ws.Cells[1, 4].Value = "Закажите горячее";
-    ws.Cells[1, 5].Value = "Закажите суп";
-    ws.Cells[1, 6].Value = "Закажите десерт";
-    ws.Cells[1, 7].Value = "Будет ли кофе?";
-    ws.Cells[1, 8].Value = "Локация";
-
-    var row = 2;
-    foreach (var user in users)
-    {
-        ws.Cells[row, column++].Value = user.Name;
-        ws.Cells[row, column++].Value = user.Orders[(int) day].OrderTime.GetDescription();
-        ws.Cells[row, column++].Value = user.Orders[(int) day].Lunch?.ToString();
-        ws.Cells[row, column++].Value = user.Orders[(int) day].HotFood?.GetDescription();
-        ws.Cells[row, column++].Value = user.Orders[(int) day].Soup?.GetDescription();
-        ws.Cells[row, column++].Value = user.Orders[(int) day].Bakery?.GetDescription();
-        ws.Cells[row, column++].Value = user.Orders[(int) day].WillCoffee;
-        ws.Cells[row, column++].Value = user.Location.GetDescription();
-
-        row++;
-        column = 1;
     }
 }

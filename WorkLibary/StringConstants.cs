@@ -8,26 +8,26 @@ public abstract class StringConstants
     public const string NightOrder = "Вечерняя (15:30)";
 
     // Lunches
-    public const string Manager1 = "ТОП-менеджер #1 (грибной суп-пюре, говядина су-вид, штрудель)";
-    public const string Manager2 = "ТОП-менеджер #2 (грибной суп-пюре, свинина, штрудель)";
+    public const string? Manager1 = "ТОП-менеджер #1 (грибной суп-пюре, говядина су-вид, штрудель)";
+    public const string? Manager2 = "ТОП-менеджер #2 (грибной суп-пюре, свинина, штрудель)";
     
-    public const string BusinessLady1 = "Бизнес-леди #1 (тыквенный суп-пюре, креветка, круассан)";
-    public const string BusinessLady2 = "Бизнес-леди #2 (тыквенный суп-пюре, курица, круассан)";
+    public const string? BusinessLady1 = "Бизнес-леди #1 (тыквенный суп-пюре, креветка, круассан)";
+    public const string? BusinessLady2 = "Бизнес-леди #2 (тыквенный суп-пюре, курица, круассан)";
     
-    public const string Freelancer1 = "ФРИЛАНСЕР #1 (грибной суп-пюре, курица, розочка)";
-    public const string Freelancer2 = "ФРИЛАНСЕР #2 (грибной суп-пюре, кебаб (гов-свин), розочка)";
+    public const string? Freelancer1 = "ФРИЛАНСЕР #1 (грибной суп-пюре, курица, розочка)";
+    public const string? Freelancer2 = "ФРИЛАНСЕР #2 (грибной суп-пюре, кебаб (гов-свин), розочка)";
     
-    public const string Gamer1 = "ГЕЙМЕР #1 (грибной суп-пюре, кебаб (гов-свин), пирожок с творогом и вишней)";
-    public const string Gamer2 = "ГЕЙМЕР #2 (грибной суп-пюре, кебаб (гов-кур), пирожок с творогом и вишней)";
+    public const string? Gamer1 = "ГЕЙМЕР #1 (грибной суп-пюре, кебаб (гов-свин), пирожок с творогом и вишней)";
+    public const string? Gamer2 = "ГЕЙМЕР #2 (грибной суп-пюре, кебаб (гов-кур), пирожок с творогом и вишней)";
     
-    public const string Vegan1 = "Веган #1 (шпинатный суп-пюре, фалафель нут, морковный кекс)";
-    public const string Vegan2 = "Веган #2 (шпинатный суп-пюре, фалафель греча, морковный кекс)";
-    public const string Vegan3 = "Веган #3 (шпинатный суп-пюре, фалафель фасоль, морковный кекс)";
+    public const string? Vegan1 = "Веган #1 (шпинатный суп-пюре, фалафель нут, морковный кекс)";
+    public const string? Vegan2 = "Веган #2 (шпинатный суп-пюре, фалафель греча, морковный кекс)";
+    public const string? Vegan3 = "Веган #3 (шпинатный суп-пюре, фалафель фасоль, морковный кекс)";
 
-    public const string Prince1 =
+    public const string? Prince1 =
         "СУПЕРГЕРОЙ / ПРИНЦЕССА #1 (фрикадельки, картофельный дольки с сырным соусом, пирожок с творогом)";
     
-    public const string Prince2 =
+    public const string? Prince2 =
         "СУПЕРГЕРОЙ / ПРИНЦЕССА #2 (фрикадельки, картофельный дольки с грибным соусом, пирожок с творогом)";
     
     // HotFood

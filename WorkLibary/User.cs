@@ -5,13 +5,13 @@ namespace WorkLibary;
 
 public class User
 {
-    public readonly string Name;
+    public readonly string? Name;
 
     public readonly Location Location;
 
     public readonly List<Order> Orders = new();
 
-    public User(string name, object location)
+    public User(string? name, object? location)
     {
         Name = name;
         Location = GetLocation((string) location);

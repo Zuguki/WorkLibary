@@ -5,7 +5,7 @@ namespace WorkLibary;
 
 public static class EnumExt
 {
-    public static string GetDescription<T>(this T enumerationValue)
+    public static string? GetDescription<T>(this T enumerationValue)
         where T : struct
     {
         Type type = enumerationValue.GetType();
