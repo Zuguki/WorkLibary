@@ -44,22 +44,29 @@ public class ExcelReader
         return result;
     }
 
-    public IEnumerable<string[]> ReadAllLines(int startFrom = 2, int rowTo = 100)
+    public IEnumerable<string[]> ReadAllLines(int rowStart = 2, int rowTo = 100)
     {
-        for (var row = startFrom; row < rowTo; row++)
-            yield return ReadLine(row);
+        var row = rowStart;
+            
+        while (true)
+        {
+            if (excelWorksheet.Cells[row, 1].Value is null)
+                break;
+            
+            yield return ReadLine(row++);
+        }
     }
 
     public IEnumerable<string> ReadCellsById(int columnId, int rowStart = 1)
     {
-        // while (true)
-        // {
-        // if (excelWorksheet.Cells[rowStart, columnId] is null)
-        //     break;
+        var row = rowStart;
+        
+        while (true)
+        {
+            if (excelWorksheet.Cells[row, columnId].Value is null)
+                break;
 
-        // }
-        // TODO: Change
-        for (var row = rowStart; row < 100; row++)
-            yield return (string) excelWorksheet.Cells[row, columnId].Value;;
+            yield return (string) excelWorksheet.Cells[row++, columnId].Value;
+        }
     }
 }
