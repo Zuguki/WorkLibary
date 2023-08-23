@@ -5,63 +5,77 @@ using OfficeOpenXml;
 using WorkLibary;
 using WorkLibary.Lunch;
 
-var fi = new FileInfo(@"A.xlsx");
-var users = new List<User>();
 var startRow = 2;
 var maxRow = 100;
 
 public class ExcelReader
 {
-    private ExcelPackage package;
+    private readonly ExcelWorksheet excelWorksheet;
 
-    public ExcelReader(FileInfo fileInfo)
+    public ExcelReader(ExcelWorksheet excelWorksheet)
     {
-        package = new ExcelPackage(fileInfo);
+        this.excelWorksheet = excelWorksheet;
     }
-    
-    public string[] ReadLine(string worksheet, int row)
+
+    public string[] ReadLine(int row)
     {
-        var ws = package.Workbook.Worksheets[worksheet];
         var result = new string[5];
 
-        result[0] = (string) ws.Cells[row, 3].Value + " " + (string) ws.Cells[row, 32].Value;
-        
-        result[1] = (string) ws.Cells[row, 5].Value + " " + (string) ws.Cells[row, 6].Value + " " +
-                    (string) ws.Cells[row, 7].Value + " " + (string) ws.Cells[row, 8].Value + " " +
-                    (string) ws.Cells[row, 9].Value + " " + (string) ws.Cells[row, 10].Value;
-        
-        result[2] = (string) ws.Cells[row, 12].Value + " " + (string) ws.Cells[row, 13].Value + " " +
-                    (string) ws.Cells[row, 14].Value + " " + (string) ws.Cells[row, 15].Value + " " +
-                    (string) ws.Cells[row, 16].Value + " " + (string) ws.Cells[row, 17].Value;
-        
-        result[3] = (string) ws.Cells[row, 19].Value + " " + (string) ws.Cells[row, 20].Value + " " +
-                    (string) ws.Cells[row, 21].Value + " " + (string) ws.Cells[row, 22].Value + " " +
-                    (string) ws.Cells[row, 23].Value + " " + (string) ws.Cells[row, 24].Value;
-        
-        result[4] = (string) ws.Cells[row, 26].Value + " " + (string) ws.Cells[row, 27].Value + " " +
-                    (string) ws.Cells[row, 28].Value + " " + (string) ws.Cells[row, 29].Value + " " +
-                    (string) ws.Cells[row, 30].Value + " " + (string) ws.Cells[row, 31].Value;
+        result[0] = (string) excelWorksheet.Cells[row, 3].Value + " " + (string) excelWorksheet.Cells[row, 32].Value;
+
+        result[1] = (string) excelWorksheet.Cells[row, 5].Value + " " + (string) excelWorksheet.Cells[row, 6].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 7].Value + " " + (string) excelWorksheet.Cells[row, 8].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 9].Value + " " + (string) excelWorksheet.Cells[row, 10].Value;
+
+        result[2] = (string) excelWorksheet.Cells[row, 12].Value + " " + (string) excelWorksheet.Cells[row, 13].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 14].Value + " " + (string) excelWorksheet.Cells[row, 15].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 16].Value + " " + (string) excelWorksheet.Cells[row, 17].Value;
+
+        result[3] = (string) excelWorksheet.Cells[row, 19].Value + " " + (string) excelWorksheet.Cells[row, 20].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 21].Value + " " + (string) excelWorksheet.Cells[row, 22].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 23].Value + " " + (string) excelWorksheet.Cells[row, 24].Value;
+
+        result[4] = (string) excelWorksheet.Cells[row, 26].Value + " " + (string) excelWorksheet.Cells[row, 27].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 28].Value + " " + (string) excelWorksheet.Cells[row, 29].Value +
+                    " " +
+                    (string) excelWorksheet.Cells[row, 30].Value + " " + (string) excelWorksheet.Cells[row, 31].Value;
 
         return result;
     }
 
-    public IEnumerable<string[]> ReadAllLines(string worksheet, int startFrom = 2, int rowTo = 100)
+    public IEnumerable<string[]> ReadAllLines(int startFrom = 2, int rowTo = 100)
     {
         for (var row = startFrom; row < rowTo; row++)
-            yield return ReadLine(worksheet, row);
+            yield return ReadLine(row);
     }
+
+    public ExcelRangeColumn ReadCellsById(int columnId) =>
+        excelWorksheet.Columns[columnId];
 }
 
 public class PageBuilder
 {
-    private readonly ExcelWorksheet worksheet;
+    public ExcelWorksheet Worksheet { get; }
 
     public PageBuilder(ExcelWorksheet worksheet)
     {
-        this.worksheet = worksheet;
+        Worksheet = worksheet;
     }
 
-    public void SetTitles(bool needHodFood = true, bool needSoup = true, bool needBakery = true,
+    public PageBuilder AddCell(int row, int column, string value)
+    {
+        Worksheet.Cells[row, column].Value = value;
+        return this;
+    }
+
+    public PageBuilder SetTitles(bool needHodFood = true, bool needSoup = true, bool needBakery = true,
         bool needLunches = true)
     {
         var row = 2;
@@ -81,62 +95,63 @@ public class PageBuilder
         // Lunches
         if (needLunches)
             SetLunchesTitle(ref row);
+
+        return this;
     }
 
     #region SetFoodTitle
 
-    
     private void SetHotFoodsTitle(ref int row)
     {
-        worksheet.Cells[row++, 1].Value = HotFood.Pork.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.Beef.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.Chicken.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.Shrimp.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.FalafelBeans.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.FalafelChickpea.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.FalafelBuckwheat.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.KebabChicken.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.MeetBallsCheese.GetDescription();
-        worksheet.Cells[row++, 1].Value = HotFood.MeetBallsMushroom.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.Pork.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.Beef.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.Chicken.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.Shrimp.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.FalafelBeans.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.FalafelChickpea.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.FalafelBuckwheat.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.KebabChicken.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.MeetBallsCheese.GetDescription();
+        Worksheet.Cells[row++, 1].Value = HotFood.MeetBallsMushroom.GetDescription();
     }
 
     private void SetSoupsTitle(ref int row)
     {
-        worksheet.Cells[row++, 1].Value = Soup.SpinachSoup.GetDescription();
-        worksheet.Cells[row++, 1].Value = Soup.MushroomSoup.GetDescription();
-        worksheet.Cells[row++, 1].Value = Soup.PumpkinSoup.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Soup.SpinachSoup.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Soup.MushroomSoup.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Soup.PumpkinSoup.GetDescription();
     }
 
     private void SetBakeriesTitle(ref int row)
     {
-        worksheet.Cells[row++, 1].Value = Bakery.AppleStrudel.GetDescription();
-        worksheet.Cells[row++, 1].Value = Bakery.CarrotCake.GetDescription();
-        worksheet.Cells[row++, 1].Value = Bakery.ChocolateCroissant.GetDescription();
-        worksheet.Cells[row++, 1].Value = Bakery.CottageCheesePie.GetDescription();
-        worksheet.Cells[row++, 1].Value = Bakery.CottageCheeseAndCherryPie.GetDescription();
-        worksheet.Cells[row++, 1].Value = Bakery.RoseWithApplesAndCherries.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Bakery.AppleStrudel.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Bakery.CarrotCake.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Bakery.ChocolateCroissant.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Bakery.CottageCheesePie.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Bakery.CottageCheeseAndCherryPie.GetDescription();
+        Worksheet.Cells[row++, 1].Value = Bakery.RoseWithApplesAndCherries.GetDescription();
     }
 
     private void SetLunchesTitle(ref int row)
     {
-        worksheet.Cells[row++, 1].Value = StringConstants.Manager1;
-        worksheet.Cells[row++, 1].Value = StringConstants.Manager2;
-        worksheet.Cells[row++, 1].Value = StringConstants.BusinessLady1;
-        worksheet.Cells[row++, 1].Value = StringConstants.BusinessLady2;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Manager1;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Manager2;
+        Worksheet.Cells[row++, 1].Value = StringConstants.BusinessLady1;
+        Worksheet.Cells[row++, 1].Value = StringConstants.BusinessLady2;
 
-        worksheet.Cells[row++, 1].Value = StringConstants.Freelancer1;
-        worksheet.Cells[row++, 1].Value = StringConstants.Freelancer2;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Freelancer1;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Freelancer2;
 
-        worksheet.Cells[row++, 1].Value = StringConstants.Gamer1;
-        worksheet.Cells[row++, 1].Value = StringConstants.Gamer2;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Gamer1;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Gamer2;
 
-        worksheet.Cells[row++, 1].Value = StringConstants.Vegan1;
-        worksheet.Cells[row++, 1].Value = StringConstants.Vegan2;
-        worksheet.Cells[row++, 1].Value = StringConstants.Vegan3;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Vegan1;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Vegan2;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Vegan3;
 
-        worksheet.Cells[row++, 1].Value = StringConstants.Prince1;
-        worksheet.Cells[row++, 1].Value = StringConstants.Prince2;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Prince1;
+        Worksheet.Cells[row++, 1].Value = StringConstants.Prince2;
     }
 
     #endregion
@@ -161,28 +176,13 @@ public class ExcelBuilder
 
     public PageBuilder? GetPage(string worksheet) =>
         !pages.ContainsKey(worksheet) ? null : pages[worksheet];
-    
 }
 
-void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
-    Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
-    int column, Days day)
-{
-    var ws = p.Workbook.Worksheets.Add(day + "Order");
-    SetTitles(ws);
-    
-    ws.Cells[1, column].Value = "Утренние заказы";
-    SetFoodCount(ws, column++, OrderTime.Morning, day, hotFoods, soups, bakery, true);
-         
-    ws.Cells[1, column].Value = "Дневные заказы";
-    SetFoodCount(ws, column++, OrderTime.Day, day, hotFoods, soups, bakery, true);
-         
-    ws.Cells[1, column].Value = "Вечерние заказы";
-    SetFoodCount(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery, true);
-}
+var fi = new FileInfo(@"A.xlsx");
+var users = new List<User>();
 
-var reader = new ExcelReader(fi);
-foreach (var userAndOrders in reader.ReadAllLines("Sheet"))
+var reader = new ExcelReader(new ExcelPackage(fi).Workbook.Worksheets["Sheet"]);
+foreach (var userAndOrders in reader.ReadAllLines())
 {
     var userAndLocation = userAndOrders[0].Split(" ");
     var tuesday = userAndLocation[1].Split(" ");
@@ -385,7 +385,14 @@ void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, 
     Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
     int column, Days day)
 {
-    var ws = p.Workbook.Worksheets.Add(day + "Order");
+    var builder = new ExcelBuilder();
+    var pageBuilder = builder.AddPage(day.GetDescription() + " Заказ").SetTitles();
+    var reader = new ExcelReader(pageBuilder.Worksheet);
+    
+    pageBuilder.AddCell(1, 2, "Утренние");
+    pageBuilder.AddCell(1, 3, "Дневные");
+    pageBuilder.AddCell(1, 4, "Вечерние");
+    
     SetTitles(ws);
     
          ws.Cells[1, column].Value = "Утренние заказы";
@@ -401,6 +408,7 @@ void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, 
          SetFoodCount(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery, true);
 }
 
+// TODO: Change with other yandex
 int GetFoodCount(OrderTime orderTime, string product, Days day, bool withYandex = true)
 {
     var hotFood = User.GetHotFood(product);
@@ -480,9 +488,8 @@ int GetFoodCount(OrderTime orderTime, string product, Days day, bool withYandex 
 //                     .Count(u => u.Orders[(int) day].Lunch!.Name == lunchTitle);
 //         }
 //     }
-}
+// }
 
-// TODO: Test
 void TryReplaceToLunches(int orderIndex)
 {
     foreach (var user in users)
