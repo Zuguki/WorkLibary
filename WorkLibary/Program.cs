@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Aspose.Words;
+using Aspose.Words.XAttr;
 using OfficeOpenXml;
 using WorkLibary;
 using WorkLibary.Lunch;
@@ -9,32 +10,142 @@ var users = new List<User>();
 var startRow = 2;
 var maxRow = 100;
 
-using (var p = new ExcelPackage(fi))
+public class ExcelReader
 {
-    var ws = p.Workbook.Worksheets["Sheet"];
-    var rows = 100;
-    for (var row = 2; row < rows; row++)
-    {
-        var user = new User((string) ws.Cells[row, 3].Value, ws.Cells[row, 32].Value);
-        user.AddOrder(ws.Cells[row, 5].Value, ws.Cells[row, 6].Value, ws.Cells[row, 7].Value, ws.Cells[row, 8].Value,
-            ws.Cells[row, 9].Value, ws.Cells[row, 10].Value);
-        user.AddOrder(ws.Cells[row, 12].Value, ws.Cells[row, 13].Value, ws.Cells[row, 14].Value, 
-            ws.Cells[row, 15].Value, ws.Cells[row, 16].Value, ws.Cells[row, 17].Value);
-        user.AddOrder(ws.Cells[row, 19].Value, ws.Cells[row, 20].Value, ws.Cells[row, 21].Value, 
-            ws.Cells[row, 22].Value, ws.Cells[row, 23].Value, ws.Cells[row, 24].Value);
-        user.AddOrder(ws.Cells[row, 26].Value, ws.Cells[row, 27].Value, ws.Cells[row, 28].Value, 
-            ws.Cells[row, 29].Value, ws.Cells[row, 30].Value, ws.Cells[row, 31].Value);
+    private ExcelPackage package;
 
-        users.Add(user);
+    public ExcelReader(FileInfo fileInfo)
+    {
+        package = new ExcelPackage(fileInfo);
     }
     
-    p.Save();
+    public string[] ReadLine(string worksheet, int row)
+    {
+        var ws = package.Workbook.Worksheets[worksheet];
+        var result = new string[5];
+
+        result[0] = (string) ws.Cells[row, 3].Value + " " + (string) ws.Cells[row, 32].Value;
+        
+        result[1] = (string) ws.Cells[row, 5].Value + " " + (string) ws.Cells[row, 6].Value + " " +
+                    (string) ws.Cells[row, 7].Value + " " + (string) ws.Cells[row, 8].Value + " " +
+                    (string) ws.Cells[row, 9].Value + " " + (string) ws.Cells[row, 10].Value;
+        
+        result[2] = (string) ws.Cells[row, 12].Value + " " + (string) ws.Cells[row, 13].Value + " " +
+                    (string) ws.Cells[row, 14].Value + " " + (string) ws.Cells[row, 15].Value + " " +
+                    (string) ws.Cells[row, 16].Value + " " + (string) ws.Cells[row, 17].Value;
+        
+        result[3] = (string) ws.Cells[row, 19].Value + " " + (string) ws.Cells[row, 20].Value + " " +
+                    (string) ws.Cells[row, 21].Value + " " + (string) ws.Cells[row, 22].Value + " " +
+                    (string) ws.Cells[row, 23].Value + " " + (string) ws.Cells[row, 24].Value;
+        
+        result[4] = (string) ws.Cells[row, 26].Value + " " + (string) ws.Cells[row, 27].Value + " " +
+                    (string) ws.Cells[row, 28].Value + " " + (string) ws.Cells[row, 29].Value + " " +
+                    (string) ws.Cells[row, 30].Value + " " + (string) ws.Cells[row, 31].Value;
+
+        return result;
+    }
+
+    public IEnumerable<string[]> ReadAllLines(string worksheet, int startFrom = 2, int rowTo = 100)
+    {
+        for (var row = startFrom; row < rowTo; row++)
+            yield return ReadLine(worksheet, row);
+    }
 }
 
-using (var p = new ExcelPackage())
+public class PageBuilder
+{
+    private readonly ExcelWorksheet worksheet;
+
+    public PageBuilder(ExcelWorksheet worksheet)
+    {
+        this.worksheet = worksheet;
+    }
+    
+    
+}
+
+public class ExcelBuilder
+{
+    private ExcelPackage package = new ExcelPackage();
+    private Dictionary<string, PageBuilder> pages;
+
+    public PageBuilder AddPage(string worksheet)
+    {
+        if (pages.ContainsKey(worksheet))
+            throw new Exception("Can't add excisted page");
+
+        var pageWorksheet = package.Workbook.Worksheets.Add(worksheet);
+        var pageBuilder = new PageBuilder(pageWorksheet);
+        pages.Add(worksheet, pageBuilder);
+
+        return pageBuilder;
+    }
+
+    public PageBuilder? GetPage(string worksheet) =>
+        !pages.ContainsKey(worksheet) ? null : pages[worksheet];
+}
+
+void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
+    Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
+    int column, Days day)
+{
+    var ws = p.Workbook.Worksheets.Add(day + "Order");
+    SetNames(ws);
+    
+    ws.Cells[1, column].Value = "Утренние заказы";
+    SetFoodCount(ws, column++, OrderTime.Morning, day, hotFoods, soups, bakery, true);
+         
+    ws.Cells[1, column].Value = "Дневные заказы";
+    SetFoodCount(ws, column++, OrderTime.Day, day, hotFoods, soups, bakery, true);
+         
+    ws.Cells[1, column].Value = "Вечерние заказы";
+    SetFoodCount(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery, true);
+}
+
+var reader = new ExcelReader(fi);
+foreach (var userAndOrders in reader.ReadAllLines("Sheet"))
+{
+    var userAndLocation = userAndOrders[0].Split(" ");
+    var tuesday = userAndLocation[1].Split(" ");
+    var wednesday= userAndLocation[2].Split(" ");
+    var thursday = userAndLocation[3].Split(" ");
+    var friday = userAndLocation[4].Split(" ");
+    
+    var user = new User(userAndOrders[0], userAndLocation[1]);
+    user.AddOrder(tuesday[0], tuesday[1], tuesday[2], tuesday[3], tuesday[4], tuesday[5]);
+    user.AddOrder(wednesday[0], wednesday[1], wednesday[2], wednesday[3], wednesday[4], wednesday[5]);
+    user.AddOrder(thursday[0], thursday[1], thursday[2], thursday[3], thursday[4], thursday[5]);
+    user.AddOrder(friday[0], friday[1], friday[2], friday[3], friday[4], friday[5]);
+    
+    users.Add(user);
+}
+
+// TODO: OBSOLETE
+// using (var p = new ExcelPackage(fi))
+// {
+//     var ws = p.Workbook.Worksheets["Sheet"];
+//     var rows = 100;
+//     for (var row = 2; row < rows; row++)
+//     {
+//         var user = new User((string) ws.Cells[row, 3].Value, ws.Cells[row, 32].Value);
+//         user.AddOrder(ws.Cells[row, 5].Value, ws.Cells[row, 6].Value, ws.Cells[row, 7].Value, ws.Cells[row, 8].Value,
+//             ws.Cells[row, 9].Value, ws.Cells[row, 10].Value);
+//         user.AddOrder(ws.Cells[row, 12].Value, ws.Cells[row, 13].Value, ws.Cells[row, 14].Value, 
+//             ws.Cells[row, 15].Value, ws.Cells[row, 16].Value, ws.Cells[row, 17].Value);
+//         user.AddOrder(ws.Cells[row, 19].Value, ws.Cells[row, 20].Value, ws.Cells[row, 21].Value, 
+//             ws.Cells[row, 22].Value, ws.Cells[row, 23].Value, ws.Cells[row, 24].Value);
+//         user.AddOrder(ws.Cells[row, 26].Value, ws.Cells[row, 27].Value, ws.Cells[row, 28].Value, 
+//             ws.Cells[row, 29].Value, ws.Cells[row, 30].Value, ws.Cells[row, 31].Value);
+//
+//         users.Add(user);
+//     }
+//     
+//     p.Save();
+// }
+
+using (var package = new ExcelPackage())
 {
     foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
-    // foreach (var day in new[] {Days.Tuesday})
     {
         TryReplaceToLunches((int) day);
         
@@ -46,9 +157,9 @@ using (var p = new ExcelPackage())
         var lunchesOnceCount = GetLunches2(
             users.Where(user => user.Orders.Count > (int) day && user.Orders[(int) day].Lunch is not null), (int) day);
         
-        GenerateUserOrder(p, column - 1, day);
-        GenerateForOrder(p, hotFoods, soups, bakery, lunches, lunchesOnceCount, column, day);
-        GenerateForKitchen(p, hotFoods, soups, bakery, lunchesOnceCount, column, day);
+        GenerateUserOrder(package, column - 1, day);
+        GenerateForOrder(package, hotFoods, soups, bakery, column, day);
+        GenerateForKitchen(package, hotFoods, soups, bakery, lunchesOnceCount, column, day);
         
         var documentKitchen = new Document();
         var documentYandex = new Document();
@@ -61,7 +172,7 @@ using (var p = new ExcelPackage())
         documentYandex.Save($"A{day}Yandex.docx");
     }
 
-    p.SaveAs(new FileInfo(@"AAA.xlsx"));
+    package.SaveAs(new FileInfo(@"AAA.xlsx"));
 }
 
 void GenerateYandexDocument(DocumentBuilder builder, Days day)
@@ -88,8 +199,10 @@ void GenerateKitchenDocument(DocumentBuilder builder, Days day)
 
     GenerateFor(builder, day, Location.Vosstaniya, OrderTime.Morning, "Восстания,32 – утро!");
     GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Day, "Трамвайный,15 – день! (12:30)", true);
+    // GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Day, "Трамвайный,15 – день! (12:30)");
     GenerateFor(builder, day, Location.Gagarina, OrderTime.Day, "Гагарина 28, Д – день! (12:30)");
     GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Night, "Трамвайный,15 – вечер! (15:30)", true);
+    // GenerateFor(builder, day, Location.Tramvainaya, OrderTime.Night, "Трамвайный,15 – вечер! (15:30)");
     GenerateFor(builder, day, Location.Gagarina, OrderTime.Night, "Гагарина 28, Д – вечер! (15:30)");
 }
 
@@ -177,13 +290,13 @@ void GenerateForKitchen(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime
         SetNames(ws);
         
         ws.Cells[1, column].Value = "Утро для кухни";
-        SetSumToColumnForKitchen(ws, column++, (int) day, OrderTime.Morning);
+        SetSumToColumnForKitchen(ws, column++, (int) day, OrderTime.Morning, true);
         
         ws.Cells[1, column].Value = "День для кухни";
-        SetSumToColumnForKitchen(ws, column++, (int) day, OrderTime.Day);
+        SetSumToColumnForKitchen(ws, column++, (int) day, OrderTime.Day, true);
         
         ws.Cells[1, column].Value = "Вечер для кухни";
-        SetSumToColumnForKitchen(ws, column++, (int) day, OrderTime.Night);
+        SetSumToColumnForKitchen(ws, column++, (int) day, OrderTime.Night, true);
         
         ws.Cells[1, column].Value = "Итого для кухни";
         SetSumToColumnForKitchen(ws,  column++, (int) day, null);
@@ -191,27 +304,28 @@ void GenerateForKitchen(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime
 
 void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
     Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
-    Dictionary<string, Dictionary<OrderTime, int>> lunches,
-    Dictionary<string, Dictionary<OrderTime, int>> lunchesOnceCount,
     int column, Days day)
 {
     var ws = p.Workbook.Worksheets.Add(day + "Order");
     SetNames(ws);
     
          ws.Cells[1, column].Value = "Утренние заказы";
-         SetFoodCountWithoutYandex(ws, column++, OrderTime.Morning, day, hotFoods, soups, bakery);
+         // SetFoodCountWithoutYandex(ws, column++, OrderTime.Morning, day, hotFoods, soups, bakery);
+         SetFoodCount(ws, column++, OrderTime.Morning, day, hotFoods, soups, bakery, true);
          
          ws.Cells[1, column].Value = "Дневные заказы";
-         SetFoodCountWithoutYandex(ws, column++, OrderTime.Day, day, hotFoods, soups, bakery);
+         // SetFoodCountWithoutYandex(ws, column++, OrderTime.Day, day, hotFoods, soups, bakery);
+         SetFoodCount(ws, column++, OrderTime.Day, day, hotFoods, soups, bakery, true);
          
          ws.Cells[1, column].Value = "Вечерние заказы";
-         SetFoodCountWithoutYandex(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery);
+         // SetFoodCountWithoutYandex(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery);
+         SetFoodCount(ws, column++, OrderTime.Night, day, hotFoods, soups, bakery, true);
 }
 
-void SetFoodCountWithoutYandex(ExcelWorksheet ws, int column, OrderTime orderTime, Days day,
+void SetFoodCount(ExcelWorksheet ws, int column, OrderTime orderTime, Days day,
     Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
     Dictionary<Soup, Dictionary<OrderTime, int>> soups,
-    Dictionary<Bakery, Dictionary<OrderTime, int>> bakeries)
+    Dictionary<Bakery, Dictionary<OrderTime, int>> bakeries, bool withYandex = true)
 {
     for (var row = startRow; row < maxRow; row++)
     {
@@ -239,54 +353,20 @@ void SetFoodCountWithoutYandex(ExcelWorksheet ws, int column, OrderTime orderTim
         var lunchTitle = (string) ws.Cells[row, 1].Value;
         if (lunchTitle is not null)
         {
-            ws.Cells[row, column].Value = users
-                .Where(us =>
-                    (us.Orders[(int) day].Lunch is not null && us.Location != Location.Tramvainaya &&
-                     us.Orders[(int) day].OrderTime == orderTime))
-                .Count(u => u.Orders[(int) day].Lunch!.Name == lunchTitle);
+            if (withYandex)
+                ws.Cells[row, column].Value = users
+                    .Where(us =>
+                        (us.Orders[(int) day].Lunch is not null && us.Orders[(int) day].OrderTime == orderTime)
+                        && us.Location != Location.Tramvainaya)
+                    .Count(u => u.Orders[(int) day].Lunch!.Name == lunchTitle);
+            else
+                ws.Cells[row, column].Value = users
+                    .Where(us =>
+                        (us.Orders[(int) day].Lunch is not null && us.Orders[(int) day].OrderTime == orderTime))
+                    .Count(u => u.Orders[(int) day].Lunch!.Name == lunchTitle);
         }
     }
 }
-
-// void GenerateForOrder(ExcelPackage p, Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
-//     Dictionary<Soup, Dictionary<OrderTime, int>> soups, Dictionary<Bakery, Dictionary<OrderTime, int>> bakery,
-//     Dictionary<string, Dictionary<OrderTime, int>> lunches,
-//     Dictionary<string, Dictionary<OrderTime, int>> lunchesOnceCount,
-//     int column, Days day)
-// {
-//         var ws = p.Workbook.Worksheets.Add(day.ToString());
-//         SetNames(ws);
-//         
-//         ws.Cells[1, column].Value = "Утренние заказы";
-//         SetFoodCount(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunches);
-//         
-//         ws.Cells[1, column].Value = "Дневные заказы";
-//         SetFoodCount(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunches);
-//         
-//         ws.Cells[1, column].Value = "Вечерние заказы";
-//         SetFoodCount(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunches);
-//
-//         ws.Cells[1, column].Value = "Утренние заказы без наборов";
-//         SetLunchOnceCount(ws, column++, OrderTime.Morning, lunchesOnceCount);
-//         
-//         ws.Cells[1, column].Value = "Дневные заказы без наборов";
-//         SetLunchOnceCount(ws, column++, OrderTime.Day, lunchesOnceCount);
-//         
-//         ws.Cells[1, column].Value = "Вечерние заказы без наборов";
-//         SetLunchOnceCount(ws, column++, OrderTime.Night, lunchesOnceCount);
-//
-//         ws.Cells[1, column].Value = "Утро с яндексом";
-//         SetSumToColumnWithYandex(ws, column++, OrderTime.Morning, hotFoods, soups, bakery, lunchesOnceCount);
-//         
-//         ws.Cells[1, column].Value = "День с яндексом";
-//         SetSumToColumnWithYandex(ws, column++, OrderTime.Day, hotFoods, soups, bakery, lunchesOnceCount);
-//         
-//         ws.Cells[1, column].Value = "Вечер с яндексом";
-//         SetSumToColumnWithYandex(ws, column++, OrderTime.Night, hotFoods, soups, bakery, lunchesOnceCount);
-//         
-//         ws.Cells[1, column].Value = "Итого с яндексом";
-//         SetSumToColumnWithYandex(ws,  column++, null, hotFoods, soups, bakery, lunchesOnceCount);
-// }
 
 // TODO: Test
 void TryReplaceToLunches(int orderIndex)
@@ -317,55 +397,56 @@ void TryReplaceToLunches(int orderIndex)
     }
 }
 
-void SetNames(ExcelWorksheet ws)
-{
-    var row = startRow;
-    
-    // HotFood
-    ws.Cells[row++, 1].Value = HotFood.Pork.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.Beef.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.Chicken.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.Shrimp.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.FalafelBeans.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.FalafelChickpea.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.FalafelBuckwheat.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.KebabChicken.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.MeetBallsCheese.GetDescription();
-    ws.Cells[row++, 1].Value = HotFood.MeetBallsMushroom.GetDescription();
-    
-    // Soup
-    ws.Cells[row++, 1].Value = Soup.SpinachSoup.GetDescription();
-    ws.Cells[row++, 1].Value = Soup.MushroomSoup.GetDescription();
-    ws.Cells[row++, 1].Value = Soup.PumpkinSoup.GetDescription();
-    
-    // Bakery
-    ws.Cells[row++, 1].Value = Bakery.AppleStrudel.GetDescription();
-    ws.Cells[row++, 1].Value = Bakery.CarrotCake.GetDescription();
-    ws.Cells[row++, 1].Value = Bakery.ChocolateCroissant.GetDescription();
-    ws.Cells[row++, 1].Value = Bakery.CottageCheesePie.GetDescription();
-    ws.Cells[row++, 1].Value = Bakery.CottageCheeseAndCherryPie.GetDescription();
-    ws.Cells[row++, 1].Value = Bakery.RoseWithApplesAndCherries.GetDescription();
-    
-    // Lunches
-    ws.Cells[row++, 1].Value = StringConstants.Manager1;
-    ws.Cells[row++, 1].Value = StringConstants.Manager2;
-    ws.Cells[row++, 1].Value = StringConstants.BusinessLady1;
-    ws.Cells[row++, 1].Value = StringConstants.BusinessLady2;
-    
-    ws.Cells[row++, 1].Value = StringConstants.Freelancer1;
-    ws.Cells[row++, 1].Value = StringConstants.Freelancer2;
-    
-    ws.Cells[row++, 1].Value = StringConstants.Gamer1;
-    ws.Cells[row++, 1].Value = StringConstants.Gamer2;
-    
-    ws.Cells[row++, 1].Value = StringConstants.Vegan1;
-    ws.Cells[row++, 1].Value = StringConstants.Vegan2;
-    ws.Cells[row++, 1].Value = StringConstants.Vegan3;
-    
-    ws.Cells[row++, 1].Value = StringConstants.Prince1;
-    ws.Cells[row++, 1].Value = StringConstants.Prince2;
-}
+// TODO: OBSOLETE
+// void SetNames(ExcelWorksheet ws)
+// {
+//     var row = startRow;
+//     
+//     // HotFood
+//     ws.Cells[row++, 1].Value = HotFood.Pork.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.Beef.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.Chicken.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.Shrimp.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.FalafelBeans.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.FalafelChickpea.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.FalafelBuckwheat.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.KebabChicken.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.MeetBallsCheese.GetDescription();
+//     ws.Cells[row++, 1].Value = HotFood.MeetBallsMushroom.GetDescription();
+//     
+//     // Soup
+//     ws.Cells[row++, 1].Value = Soup.SpinachSoup.GetDescription();
+//     ws.Cells[row++, 1].Value = Soup.MushroomSoup.GetDescription();
+//     ws.Cells[row++, 1].Value = Soup.PumpkinSoup.GetDescription();
+//     
+//     // Bakery
+//     ws.Cells[row++, 1].Value = Bakery.AppleStrudel.GetDescription();
+//     ws.Cells[row++, 1].Value = Bakery.CarrotCake.GetDescription();
+//     ws.Cells[row++, 1].Value = Bakery.ChocolateCroissant.GetDescription();
+//     ws.Cells[row++, 1].Value = Bakery.CottageCheesePie.GetDescription();
+//     ws.Cells[row++, 1].Value = Bakery.CottageCheeseAndCherryPie.GetDescription();
+//     ws.Cells[row++, 1].Value = Bakery.RoseWithApplesAndCherries.GetDescription();
+//     
+//     // Lunches
+//     ws.Cells[row++, 1].Value = StringConstants.Manager1;
+//     ws.Cells[row++, 1].Value = StringConstants.Manager2;
+//     ws.Cells[row++, 1].Value = StringConstants.BusinessLady1;
+//     ws.Cells[row++, 1].Value = StringConstants.BusinessLady2;
+//     
+//     ws.Cells[row++, 1].Value = StringConstants.Freelancer1;
+//     ws.Cells[row++, 1].Value = StringConstants.Freelancer2;
+//     
+//     ws.Cells[row++, 1].Value = StringConstants.Gamer1;
+//     ws.Cells[row++, 1].Value = StringConstants.Gamer2;
+//     
+//     ws.Cells[row++, 1].Value = StringConstants.Vegan1;
+//     ws.Cells[row++, 1].Value = StringConstants.Vegan2;
+//     ws.Cells[row++, 1].Value = StringConstants.Vegan3;
+//     
+//     ws.Cells[row++, 1].Value = StringConstants.Prince1;
+//     ws.Cells[row++, 1].Value = StringConstants.Prince2;
+// }
 
 void SetSumToColumnWithYandex(ExcelWorksheet ws, int columnTo, OrderTime? orderTime,
     Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
@@ -395,7 +476,7 @@ void SetSumToColumnWithYandex(ExcelWorksheet ws, int columnTo, OrderTime? orderT
     }
 }
 
-void SetSumToColumnForKitchen(ExcelWorksheet ws, int columnTo, int orderIndex, OrderTime? time)
+void SetSumToColumnForKitchen(ExcelWorksheet ws, int columnTo, int orderIndex, OrderTime? time, bool withYandex = true)
 {
     for (var row = startRow; row < maxRow; row++)
     {
@@ -406,86 +487,92 @@ void SetSumToColumnForKitchen(ExcelWorksheet ws, int columnTo, int orderIndex, O
         var hotFood = User.GetHotFood(lunchValue);
         if (hotFood is not null)
         {
-            ws.Cells[row, columnTo].Value = users
-                                                .Where(us => us.Orders[orderIndex].Lunch is null)
-                                                .Count(us => us.Orders[orderIndex].HotFood == hotFood && (time is null || us.Orders[orderIndex].OrderTime == time)) +
-                                            users
-                                                .Where(us => us.Orders[orderIndex].Lunch is not null && us.Location != Location.Tramvainaya)
-                                                .Count(us => us.Orders[orderIndex].Lunch?.HotFood == hotFood && (time is null || us.Orders[orderIndex].OrderTime == time));
+            if (withYandex)
+                ws.Cells[row, columnTo].Value = users
+                                                    .Where(us => us.Orders[orderIndex].Lunch is null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].HotFood == hotFood &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time)) +
+                                                users
+                                                    .Where(us =>
+                                                        us.Orders[orderIndex].Lunch is not null &&
+                                                        us.Location != Location.Tramvainaya)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Lunch?.HotFood == hotFood &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time));
+            else
+                ws.Cells[row, columnTo].Value = users
+                                                    .Where(us => us.Orders[orderIndex].Lunch is null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].HotFood == hotFood &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time)) +
+                                                users
+                                                    .Where(us =>
+                                                        us.Orders[orderIndex].Lunch is not null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Lunch?.HotFood == hotFood &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time));
         }
 
         var soup = User.GetSoup(lunchValue);
         if (soup is not null)
         {
-            ws.Cells[row, columnTo].Value = users
-                                                .Where(us => us.Orders[orderIndex].Lunch is null)
-                                                .Count(us => us.Orders[orderIndex].Soup == soup && (time is null || us.Orders[orderIndex].OrderTime == time)) +
-                                            users
-                                                .Where(us => us.Orders[orderIndex].Lunch is not null && us.Location != Location.Tramvainaya)
-                                                .Count(us => us.Orders[orderIndex].Lunch?.Soup == soup && (time is null || us.Orders[orderIndex].OrderTime == time));
+            if (withYandex)
+                ws.Cells[row, columnTo].Value = users
+                                                    .Where(us => us.Orders[orderIndex].Lunch is null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Soup == soup && (time is null ||
+                                                            us.Orders[orderIndex].OrderTime == time)) +
+                                                users
+                                                    .Where(us =>
+                                                        us.Orders[orderIndex].Lunch is not null &&
+                                                        us.Location != Location.Tramvainaya)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Lunch?.Soup == soup &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time));
+            else
+                ws.Cells[row, columnTo].Value = users
+                                                    .Where(us => us.Orders[orderIndex].Lunch is null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Soup == soup && (time is null ||
+                                                            us.Orders[orderIndex].OrderTime == time)) +
+                                                users
+                                                    .Where(us =>
+                                                        us.Orders[orderIndex].Lunch is not null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Lunch?.Soup == soup &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time));
         }
 
         var bakery = User.GetBakery(lunchValue);
         if (bakery is not null)
         {
-            ws.Cells[row, columnTo].Value = users
-                                                .Where(us => us.Orders[orderIndex].Lunch is null)
-                                                .Count(us => us.Orders[orderIndex].Bakery == bakery && (time is null || us.Orders[orderIndex].OrderTime == time)) + 
-                                            users
-                                                .Where(us => us.Orders[orderIndex].Lunch is not null && us.Location != Location.Tramvainaya)
-                                                .Count(us => us.Orders[orderIndex].Lunch?.Bakery == bakery && (time is null || us.Orders[orderIndex].OrderTime == time));
+            if (withYandex)
+                ws.Cells[row, columnTo].Value = users
+                                                    .Where(us => us.Orders[orderIndex].Lunch is null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Bakery == bakery &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time)) +
+                                                users
+                                                    .Where(us =>
+                                                        us.Orders[orderIndex].Lunch is not null &&
+                                                        us.Location != Location.Tramvainaya)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Lunch?.Bakery == bakery &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time));
+            else
+                ws.Cells[row, columnTo].Value = users
+                                                    .Where(us => us.Orders[orderIndex].Lunch is null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Bakery == bakery &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time)) +
+                                                users
+                                                    .Where(us =>
+                                                        us.Orders[orderIndex].Lunch is not null)
+                                                    .Count(us =>
+                                                        us.Orders[orderIndex].Lunch?.Bakery == bakery &&
+                                                        (time is null || us.Orders[orderIndex].OrderTime == time));
         }
-    }
-}
-
-void SetFoodCount(ExcelWorksheet ws, int columnTo, OrderTime orderTime,
-    Dictionary<HotFood, Dictionary<OrderTime, int>> hotFoods,
-    Dictionary<Soup, Dictionary<OrderTime, int>> soups,
-    Dictionary<Bakery, Dictionary<OrderTime, int>> bakeries,
-    Dictionary<string, Dictionary<OrderTime, int>> lunches)
-{
-    for (var row = startRow; row < maxRow; row++)
-    {
-        var hotFood = User.GetHotFood((string) ws.Cells[row, 1].Value);
-        if (hotFood is not null)
-        {
-            ws.Cells[row, columnTo].Value = GetDictValue(hotFoods, (HotFood) hotFood, orderTime);
-            continue;
-        }
-
-        var soup = User.GetSoup((string) ws.Cells[row, 1].Value);
-        if (soup is not null)
-        {
-            ws.Cells[row, columnTo].Value = GetDictValue(soups, (Soup) soup, orderTime);
-            continue;
-        }
-        
-        var bakery = User.GetBakery((string) ws.Cells[row, 1].Value);
-        if (bakery is not null)
-        {
-            ws.Cells[row, columnTo].Value = GetDictValue(bakeries, (Bakery) bakery, orderTime);
-            continue;
-        }
-        
-        var lunchTitle = (string) ws.Cells[row, 1].Value;
-        if (lunchTitle is not null)
-        {
-            ws.Cells[row, columnTo].Value = GetDictValue(lunches, lunchTitle, orderTime);
-            continue;
-        }
-    }
-}
-
-void SetLunchOnceCount(ExcelWorksheet ws, int columnTo, OrderTime orderTime,
-    Dictionary<string, Dictionary<OrderTime, int>> lunches)
-{
-    for (var row = startRow; row < maxRow; row++)
-    {
-        var value = (string) ws.Cells[row, 1].Value;
-        if (value is null)
-            return;
-
-        ws.Cells[row, columnTo].Value = GetDictValue(lunches, value, orderTime);
     }
 }
 
