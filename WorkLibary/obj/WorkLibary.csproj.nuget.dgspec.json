@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {}
+    "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {}
   },
   "projects": {
-    "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {
+    "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
+        "projectUniqueName": "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
         "projectName": "WorkLibary",
-        "projectPath": "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
-        "packagesPath": "/home/flash/.nuget/packages/",
-        "outputPath": "/home/flash/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/",
+        "projectPath": "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/WorkLibary.csproj",
+        "packagesPath": "/Users/goodgod/.nuget/packages/",
+        "outputPath": "/Users/goodgod/Code/Rider/MyProjects/WorkLibary/WorkLibary/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/flash/.nuget/NuGet/NuGet.Config"
+          "/Users/goodgod/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -63,7 +63,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/7.0.105/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/7.0.201/RuntimeIdentifierGraph.json"
         }
       }
     }

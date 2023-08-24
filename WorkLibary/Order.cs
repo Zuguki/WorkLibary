@@ -8,8 +8,9 @@ public class Order
     public Soup? Soup;
     public Bakery? Bakery;
     public readonly bool WillCoffee;
+    public readonly Days Day;
 
-    public Order(OrderTime orderTime, Lunch.Lunch? lunch, HotFood? hotFood, Soup? soup, Bakery? bakery, bool willCoffee)
+    public Order(OrderTime orderTime, Lunch.Lunch? lunch, HotFood? hotFood, Soup? soup, Bakery? bakery, bool willCoffee, Days day)
     {
         OrderTime = orderTime;
         Lunch = lunch;
@@ -17,5 +18,6 @@ public class Order
         Soup = soup;
         Bakery = bakery;
         WillCoffee = willCoffee;
+        Day = day;
     }
 }

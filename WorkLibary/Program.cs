@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using WorkLibary;
 using WorkLibary.Builders.Excel;
-using WorkLibary.Lunch;
 
 var fileInfo = new FileInfo(@"A.xlsx");
 var users = new List<User>();
@@ -18,10 +16,11 @@ foreach (var userAndOrders in reader.ReadAllLines())
     var friday = userAndOrders[4].Split(":;:");
 
     var user = new User(userAndLocation[0], userAndLocation[1]);
-    user.AddOrder(tuesday[0], tuesday[1], tuesday[2], tuesday[3], tuesday[4], tuesday[5]);
-    user.AddOrder(wednesday[0], wednesday[1], wednesday[2], wednesday[3], wednesday[4], wednesday[5]);
-    user.AddOrder(thursday[0], thursday[1], thursday[2], thursday[3], thursday[4], thursday[5]);
-    user.AddOrder(friday[0], friday[1], friday[2], friday[3], friday[4], friday[5]);
+    user.AddOrder(tuesday[0], tuesday[1], tuesday[2], tuesday[3], tuesday[4], tuesday[5], Days.Tuesday);
+    user.AddOrder(wednesday[0], wednesday[1], wednesday[2], wednesday[3], wednesday[4], wednesday[5], Days.Wednesday);
+    user.AddOrder(thursday[0], thursday[1], thursday[2], thursday[3], thursday[4], thursday[5], Days.Thursday);
+    user.AddOrder(friday[0], friday[1], friday[2], friday[3], friday[4], friday[5], Days.Friday);
+    user.TryReplaceToLunch(new [] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday});
 
     users.Add(user);
 }
@@ -30,7 +29,6 @@ var builder = new ExcelBuilder();
 
 foreach (var day in new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday})
 {
-    TryReplaceToLunches(day);
     GenerateUserOrder(day, builder);
     GenerateForOrder(day, builder, new [] {Location.Tramvainaya});
     GenerateForKitchen(day, builder, new [] {Location.Tramvainaya});
@@ -186,32 +184,4 @@ int GetFoodCount(string product, OrderTime orderTime, Days day, Location[]? yand
             us.Orders[(int) day].Lunch is not null && us.Orders[(int) day].OrderTime == orderTime &&
             (yandexLocations is null || yandexLocations!.All(location => location != us.Location)))
         .Count(u => u.Orders[(int) day].Lunch!.Name == product);
-}
-
-void TryReplaceToLunches(Days day)
-{
-    foreach (var user in users)
-    {
-        var ourtype = typeof(Lunch);
-        var list = Assembly.GetAssembly(ourtype)?.GetTypes()
-            .Where(type => type.IsSubclassOf(ourtype));
-
-        var orders = user.Orders[(int) day];
-        if (orders.Lunch is not null)
-            continue;
-
-        foreach (var type in list)
-        {
-            var lunch = (Lunch) Activator.CreateInstance(type)!;
-            if (orders.HotFood == lunch.HotFood
-                && orders.Soup == lunch.Soup
-                && orders.Bakery == lunch.Bakery)
-            {
-                orders.HotFood = null;
-                orders.Soup = null;
-                orders.Bakery = null;
-                orders.Lunch = lunch;
-            }
-        }
-    }
 }

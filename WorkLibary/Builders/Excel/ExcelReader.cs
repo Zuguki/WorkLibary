@@ -14,6 +14,7 @@ public class ExcelReader
     public string[] ReadLine(int row)
     {
         var result = new string[5];
+        
 
         result[0] = (string) excelWorksheet.Cells[row, 3].Value + ":;:" + (string) excelWorksheet.Cells[row, 32].Value;
 

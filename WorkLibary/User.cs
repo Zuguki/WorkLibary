@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Reflection;
 using WorkLibary.Lunch;
 
 namespace WorkLibary;
@@ -17,15 +18,44 @@ public class User
         Location = GetLocation((string) location);
     }
 
-    public void AddOrder(object date, object lunch, object hotFood, object soup, object bakery, object willCoffee)
+    public void AddOrder(string date, string lunch, string hotFood, string soup, string bakery, string willCoffee, Days day)
     {
-        var time = GetOrderTime((string) date);
-        var lunchReady = GetLunch((string) lunch);
-        var hotFoodReady = GetHotFood((string) hotFood);
-        var soupReady = GetSoup((string) soup);
-        var bakeryReady = GetBakery((string) bakery);
+        var time = GetOrderTime(date);
+        var lunchReady = GetLunch(lunch);
+        var hotFoodReady = GetHotFood(hotFood);
+        var soupReady = GetSoup(soup);
+        var bakeryReady = GetBakery(bakery);
         
-        Orders.Add(new Order(time, lunchReady, hotFoodReady, soupReady, bakeryReady, ((string) willCoffee) == "Да"));
+        Orders.Add(new Order(time, lunchReady, hotFoodReady, soupReady, bakeryReady, willCoffee == "Да", day));
+    }
+
+    public void TryReplaceToLunch(Days[] days)
+    {
+        var ourtype = typeof(Lunch.Lunch);
+        var list = Assembly.GetAssembly(ourtype)?.GetTypes()
+            .Where(type => type.IsSubclassOf(ourtype)).ToArray();
+        var orders = Orders.Where(order => days.Any(day => order.Day == day));
+
+        foreach (var order in orders)
+        {
+            if (order.Lunch is not null)
+                continue;
+
+
+            foreach (var type in list)
+            {
+                var lunch = (Lunch.Lunch) Activator.CreateInstance(type)!;
+                if (order.HotFood == lunch.HotFood
+                    && order.Soup == lunch.Soup
+                    && order.Bakery == lunch.Bakery)
+                {
+                    order.HotFood = null;
+                    order.Soup = null;
+                    order.Bakery = null;
+                    order.Lunch = lunch;
+                }
+            }
+        }
     }
 
     public static Bakery? GetBakery(string bakery)
