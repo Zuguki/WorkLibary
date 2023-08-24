@@ -1,12 +1,14 @@
 using OfficeOpenXml;
 using WorkLibary.Builders.Excel;
+using WorkLibary.Builders.Word;
 
 namespace WorkLibary.Builders;
 
 public class OrderBuilder
 {
     public ExcelBuilder ExcelBuilder { get; } = new();
-    private List<User> users = new();
+    public WordBuilder WordBuilder { get; } = new();
+    public List<User> Users = new();
 
     public OrderBuilder AddOrdersFromWorksheet(string path, string worksheet)
     {
@@ -26,7 +28,7 @@ public class OrderBuilder
                 splitLine[29], splitLine[30], Days.Friday);
             user.TryReplaceToLunch(new[] {Days.Tuesday, Days.Wednesday, Days.Thursday, Days.Friday});
 
-            users.Add(user);
+            Users.Add(user);
         }
 
         return this;
@@ -103,7 +105,7 @@ public class OrderBuilder
             .AddCell(1, 8, "Локация");
 
         var row = 2;
-        foreach (var user in users)
+        foreach (var user in Users)
         {
             pageBuilder
                 .AddCell(row, column++, user.Name ?? "")
@@ -131,7 +133,7 @@ public class OrderBuilder
     {
         var dayIndex = (int) day;
 
-        var usersWithoutYandex = users.Where(user =>
+        var usersWithoutYandex = Users.Where(user =>
             yandexLocations is null || yandexLocations.All(location => location != user.Location));
 
         var hotFood = User.GetHotFood(product);
@@ -160,25 +162,25 @@ public class OrderBuilder
         var hotFood = User.GetHotFood(product);
         if (hotFood is not null)
         {
-            return users
+            return Users
                 .Where(us => us.Orders[(int) day].HotFood is not null && us.Orders[(int) day].OrderTime == orderTime)
                 .Count(u => u.Orders[(int) day].HotFood!.Value.GetDescription() == product);
         }
 
         var soup = User.GetSoup(product);
         if (soup is not null)
-            return users
+            return Users
                 .Where(us => us.Orders[(int) day].Soup is not null && us.Orders[(int) day].OrderTime == orderTime)
                 .Count(u => u.Orders[(int) day].Soup!.Value.GetDescription() == product);
 
         var bakery = User.GetBakery(product);
         if (bakery is not null)
-            return users
+            return Users
                 .Where(us => us.Orders[(int) day].Bakery is not null && us.Orders[(int) day].OrderTime == orderTime)
                 .Count(u => u.Orders[(int) day].Bakery!.Value.GetDescription() == product);
 
         // Lunch
-        return users
+        return Users
             .Where(us =>
                 us.Orders[(int) day].Lunch is not null && us.Orders[(int) day].OrderTime == orderTime &&
                 (yandexLocations is null || yandexLocations!.All(location => location != us.Location)))
