@@ -24,26 +24,26 @@ public class PageBuilder
 
         // HotFood
         if (needHodFood)
-            SetHotFoodsTitle(ref row);
+            row = SetHotFoodsTitle(row);
 
         // Soup
         if (needSoup)
-            SetSoupsTitle(ref row);
+            row = SetSoupsTitle(row);
 
         // Bakery
         if (needBakery)
-            SetBakeriesTitle(ref row);
+            row = SetBakeriesTitle(row);
 
         // Lunches
         if (needLunches)
-            SetLunchesTitle(ref row);
+            row = SetLunchesTitle(row);
 
         return this;
     }
 
     #region SetFoodTitle
 
-    private void SetHotFoodsTitle(ref int row)
+    private int SetHotFoodsTitle(int row)
     {
         Worksheet.Cells[row++, 1].Value = HotFood.Pork.GetDescription();
         Worksheet.Cells[row++, 1].Value = HotFood.Beef.GetDescription();
@@ -56,16 +56,20 @@ public class PageBuilder
         Worksheet.Cells[row++, 1].Value = HotFood.KebabPork.GetDescription();
         Worksheet.Cells[row++, 1].Value = HotFood.MeetBallsCheese.GetDescription();
         Worksheet.Cells[row++, 1].Value = HotFood.MeetBallsMushroom.GetDescription();
+
+        return row;
     }
 
-    private void SetSoupsTitle(ref int row)
+    private int SetSoupsTitle(int row)
     {
         Worksheet.Cells[row++, 1].Value = Soup.SpinachSoup.GetDescription();
         Worksheet.Cells[row++, 1].Value = Soup.MushroomSoup.GetDescription();
         Worksheet.Cells[row++, 1].Value = Soup.PumpkinSoup.GetDescription();
+
+        return row;
     }
 
-    private void SetBakeriesTitle(ref int row)
+    private int SetBakeriesTitle(int row)
     {
         Worksheet.Cells[row++, 1].Value = Bakery.AppleStrudel.GetDescription();
         Worksheet.Cells[row++, 1].Value = Bakery.CarrotCake.GetDescription();
@@ -73,9 +77,11 @@ public class PageBuilder
         Worksheet.Cells[row++, 1].Value = Bakery.CottageCheesePie.GetDescription();
         Worksheet.Cells[row++, 1].Value = Bakery.CottageCheeseAndCherryPie.GetDescription();
         Worksheet.Cells[row++, 1].Value = Bakery.RoseWithApplesAndCherries.GetDescription();
+
+        return row;
     }
 
-    private void SetLunchesTitle(ref int row)
+    private int SetLunchesTitle(int row)
     {
         Worksheet.Cells[row++, 1].Value = StringConstants.Manager1;
         Worksheet.Cells[row++, 1].Value = StringConstants.Manager2;
@@ -94,6 +100,8 @@ public class PageBuilder
 
         Worksheet.Cells[row++, 1].Value = StringConstants.Prince1;
         Worksheet.Cells[row++, 1].Value = StringConstants.Prince2;
+
+        return row;
     }
 
     #endregion

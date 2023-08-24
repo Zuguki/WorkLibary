@@ -22,9 +22,9 @@ public class ExcelBuilder
     public PageBuilder? GetPage(string worksheet) =>
         !pages.ContainsKey(worksheet) ? null : pages[worksheet];
 
-    public void Build()
+    public void Build(string fileName)
     {
-        package.SaveAs(new FileInfo(@"AAA.xlsx"));
+        package.SaveAs(fileName);
         package.Dispose();
     }
 }

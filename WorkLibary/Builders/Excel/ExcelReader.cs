@@ -1,73 +1,73 @@
+using System.Text;
 using OfficeOpenXml;
 
 namespace WorkLibary.Builders.Excel;
 
-public class ExcelReader
+public static class ExcelReader
 {
-    private readonly ExcelWorksheet excelWorksheet;
-
-    public ExcelReader(ExcelWorksheet excelWorksheet)
+    public static string ReadLine(ExcelWorksheet excelWorksheet, int row)
     {
-        this.excelWorksheet = excelWorksheet;
+        var stringBuilder = new StringBuilder();
+        var lastColumn = GetLastColumn(excelWorksheet, row);
+
+        for (var column = 1; column <= lastColumn; column++)
+            stringBuilder.Append(excelWorksheet.Cells[row, column].Value + ":;:");
+
+        return stringBuilder.ToString();
     }
 
-    public string[] ReadLine(int row)
+    public static IEnumerable<string> ReadAllLines(ExcelWorksheet excelWorksheet, int rowStart = 2)
     {
-        var result = new string[5];
-        
-
-        result[0] = (string) excelWorksheet.Cells[row, 3].Value + ":;:" + (string) excelWorksheet.Cells[row, 32].Value;
-
-        result[1] = (string) excelWorksheet.Cells[row, 5].Value + ":;:" + (string) excelWorksheet.Cells[row, 6].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 7].Value + ":;:" + (string) excelWorksheet.Cells[row, 8].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 9].Value + ":;:" + (string) excelWorksheet.Cells[row, 10].Value;
-
-        result[2] = (string) excelWorksheet.Cells[row, 12].Value + ":;:" + (string) excelWorksheet.Cells[row, 13].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 14].Value + ":;:" + (string) excelWorksheet.Cells[row, 15].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 16].Value + ":;:" + (string) excelWorksheet.Cells[row, 17].Value;
-
-        result[3] = (string) excelWorksheet.Cells[row, 19].Value + ":;:" + (string) excelWorksheet.Cells[row, 20].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 21].Value + ":;:" + (string) excelWorksheet.Cells[row, 22].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 23].Value + ":;:" + (string) excelWorksheet.Cells[row, 24].Value;
-
-        result[4] = (string) excelWorksheet.Cells[row, 26].Value + ":;:" + (string) excelWorksheet.Cells[row, 27].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 28].Value + ":;:" + (string) excelWorksheet.Cells[row, 29].Value +
-                    ":;:" +
-                    (string) excelWorksheet.Cells[row, 30].Value + ":;:" + (string) excelWorksheet.Cells[row, 31].Value;
-
-        return result;
+        for (var row = rowStart; row < GetLastRow(excelWorksheet, 1); row++)
+            yield return ReadLine(excelWorksheet, row);
     }
 
-    public IEnumerable<string[]> ReadAllLines(int rowStart = 2, int rowTo = 100)
+    public static IEnumerable<string> ReadCellsById(ExcelWorksheet excelWorksheet, int columnId, int rowStart = 1)
     {
-        var row = rowStart;
-            
-        while (true)
+        for (var row = rowStart; row < GetLastRow(excelWorksheet, 1); row++)
         {
-            if (excelWorksheet.Cells[row, 1].Value is null)
-                break;
             
-            yield return ReadLine(row++);
+            yield return (string) excelWorksheet.Cells[row, columnId].Value;
         }
     }
 
-    public IEnumerable<string> ReadCellsById(int columnId, int rowStart = 1)
+    public static int GetLastColumn(ExcelWorksheet excelWorksheet, int row)
     {
-        var row = rowStart;
+        var countOfEmptyCells = 0;
         
-        while (true)
+        for (var column = 1; column < excelWorksheet.Columns.EndColumn; column++)
         {
-            if (excelWorksheet.Cells[row, columnId].Value is null)
-                break;
+            if (excelWorksheet.Cells[row, column].Value is null)
+            {
+                if (countOfEmptyCells++ >= 5)
+                    return column - 5;
+            }
 
-            yield return (string) excelWorksheet.Cells[row++, columnId].Value;
+            if (countOfEmptyCells > 0)
+                countOfEmptyCells = 0;
         }
+
+        return excelWorksheet.Columns.EndColumn;
+    }
+    
+    public static int GetLastRow(ExcelWorksheet excelWorksheet, int column)
+    {
+        var countOfEmptyCells = 0;
+        
+        for (var row = 1; row < excelWorksheet.Rows.EndRow; row++)
+        {
+            if (excelWorksheet.Cells[row, column].Value is null)
+            {
+                if (countOfEmptyCells++ >= 5)
+                    return row - 5;
+                
+                continue;
+            }
+
+            if (countOfEmptyCells > 0)
+                countOfEmptyCells = 0;
+        }
+
+        return excelWorksheet.Rows.EndRow;
     }
 }
