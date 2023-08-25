@@ -23,19 +23,9 @@ var builder = new OrderBuilder()
     .GenerateForKitchen(Days.Friday, yandexLocations)
     .Build();
 
-builder.WordBuilder
-    .AddDocument()
-    .GenerateYandexDocument(builder.Users, Days.Tuesday, new[] {Location.Tramvainaya})
-    .GenerateYandexDocument(builder.Users, Days.Wednesday, new[] {Location.Tramvainaya})
-    .GenerateYandexDocument(builder.Users, Days.Thursday, new[] {Location.Tramvainaya})
-    .GenerateYandexDocument(builder.Users, Days.Friday, new[] {Location.Tramvainaya})
-    .Build("Yandex.docx");
-
-builder.WordBuilder
-    .AddDocument()
-    .GenerateKitchenDocument(builder.Users, Days.Tuesday, new[] {Location.Tramvainaya})
-    .GenerateKitchenDocument(builder.Users, Days.Wednesday, new[] {Location.Tramvainaya})
-    .GenerateKitchenDocument(builder.Users, Days.Thursday, new[] {Location.Tramvainaya})
-    .GenerateKitchenDocument(builder.Users, Days.Friday, new[] {Location.Tramvainaya})
-    .Build("Orders.docx");
+builder
+    .GenerateYandexDocument(Days.Tuesday, new[] {Location.Tramvainaya})
+    .GenerateYandexDocument(Days.Wednesday, new[] {Location.Tramvainaya})
+    .GenerateKitchenDocument(Days.Tuesday, new[] {Location.Tramvainaya})
+    .GenerateKitchenDocument(Days.Wednesday, new[] {Location.Tramvainaya});
 

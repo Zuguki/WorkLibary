@@ -4,39 +4,20 @@ namespace WorkLibary.Builders.Word;
 
 public class WordBuilder
 {
-    private DocumentBuilder documentBulder;
+    private DocumentBuilder documentBuilder;
     private Document document;
 
-    public WordBuilder AddDocument()
+    public WordBuilder AddDocument(string title = "")
     {
         document = new Document();
-        documentBulder = new DocumentBuilder(document);
-        return this;
-    }
-
-    public WordBuilder GenerateYandexDocument(IEnumerable<User> users, Days day, Location[]? locations) =>
-        GenerateDocument(GetUsersWithLunchByDay, users, day, locations);
-
-    public WordBuilder GenerateKitchenDocument(IEnumerable<User> users, Days day, Location[]? locations) =>
-        GenerateDocument(GetUsersWithoutLunchByDay, users, day, locations);
-
-    private WordBuilder GenerateDocument(Func<IEnumerable<User>, Days, Location, OrderTime, IEnumerable<User>> func,
-        IEnumerable<User> users, Days day, Location[]? locations)
-    {
-        documentBulder.MoveToDocumentStart();
-        documentBulder.Font.Size = 14d;
-        documentBulder.Font.Bold = true;
-        documentBulder.Writeln(day.GetDescription());
-        documentBulder.Font.Bold = false;
-        documentBulder.Font.Size = 12d;
-
-        foreach (var location in locations)
-        {
-            GenerateTable(func(users, day, location, OrderTime.Morning), day, location.GetDescription() + "- Утро");
-            GenerateTable(func(users, day, location, OrderTime.Day), day, location.GetDescription() + "- День");
-            GenerateTable(func(users, day, location, OrderTime.Night), day, location.GetDescription() + "- Ночь");
-        }
-
+        documentBuilder = new DocumentBuilder(document);
+        
+        documentBuilder.Font.Size = 16;
+        documentBuilder.Bold = true;
+        documentBuilder.Writeln(title);
+        documentBuilder.Font.Size = 12;
+        documentBuilder.Bold = false;
+        
         return this;
     }
 
@@ -46,56 +27,46 @@ public class WordBuilder
         return this;
     }
     
-    private void GenerateTable(IEnumerable<User> users, Days day, string title)
+    public WordTableBuilder CreateTable(string title)
     {
-        if (!users.Any())
-            return;
-                
-        var userId = 1;
-        documentBulder.Font.Bold = true;
-        documentBulder.Writeln(title);
-        documentBulder.Writeln();
+        var tableBuilder = new WordTableBuilder(this, documentBuilder);
+        documentBuilder.Font.Bold = true;
+        documentBuilder.Writeln(title);
 
-        documentBulder.StartTable();
-        AddToTable("№", "ФИО", "Что заказали");
-        documentBulder.Font.Bold = false;
-
-        foreach (var user in users)
-        {
-            var order = user.Orders[(int) day];
-
-            var hotFoodText = order.HotFood is not null ? order.HotFood!.Value.GetDescription() : "";
-            var soupText = order.Soup is not null ? order.Soup!.Value.GetDescription() : "";
-            var bakeryText = order.Bakery is not null ? order.Bakery!.Value.GetDescription() : "";
-
-            var result = order.Lunch is not null 
-                ? order.Lunch.ToString() 
-                : $"{hotFoodText}\t{soupText}\t{bakeryText}";
-            
-            AddToTable(userId.ToString(), user.Name!, result!);
-            userId++;
-        }
+        documentBuilder.StartTable();
+        documentBuilder.Font.Bold = false;
+        return tableBuilder;
     }
 
-    private IEnumerable<User> GetUsersWithoutLunchByDay(IEnumerable<User> users, Days day, Location location, OrderTime time) =>
-        users.Where(user =>
-            ((user.Orders[(int) day].Lunch is null && user.Location == location) || user.Location != location) &&
-            user.Orders[(int) day].OrderTime == time);
-
-    private IEnumerable<User> GetUsersWithLunchByDay(IEnumerable<User> users, Days day, Location location, OrderTime time) =>
-        users.Where(user => user.Orders[(int) day].Lunch is not null && user.Location == location &&
-                            user.Orders[(int) day].OrderTime == time);
-    
-    private void AddToTable(string left, string center, string right)
+    public WordBuilder AddPage()
     {
-        documentBulder.InsertCell();
-        documentBulder.Write(left); 
+        documentBuilder.MoveToDocumentEnd();
+        return this;
+    }
+
     
-        documentBulder.InsertCell();
-        documentBulder.Write(center);
-    
-        documentBulder.InsertCell();
-        documentBulder.Write(right); 
-        documentBulder.EndRow();
-    } 
+}
+
+public class WordTableBuilder
+{
+    public WordBuilder WordBuilder { get; }
+    private DocumentBuilder documentBuilder { get; }
+
+    public WordTableBuilder(WordBuilder wordBuilder, DocumentBuilder documentBuilder)
+    {
+        WordBuilder = wordBuilder;
+        this.documentBuilder = documentBuilder;
+    }
+
+    public WordTableBuilder AddToTable(params string[] items)
+    {
+        foreach (var item in items)
+        {
+            documentBuilder.InsertCell();
+            documentBuilder.Write(item);
+        }
+        
+        documentBuilder.EndRow();
+        return this;
+    }
 }

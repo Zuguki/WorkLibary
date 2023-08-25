@@ -8,7 +8,24 @@ public class OrderBuilder
 {
     public ExcelBuilder ExcelBuilder { get; } = new();
     public WordBuilder WordBuilder { get; } = new();
+    
     public List<User> Users = new();
+    
+    public OrderBuilder GenerateYandexDocument(Days day, Location[]? yandexLocations)
+    {
+        WordBuilder.AddDocument(day.GetDescription());
+        GenerateDocument(GetUsersWithLunchByDay, Users, day, yandexLocations);
+        WordBuilder.Build(day.GetDescription() + "Yandex.docx");
+        return this;
+    }
+
+    public OrderBuilder GenerateKitchenDocument(Days day, Location[]? yandexLocations)
+    {
+        WordBuilder.AddDocument(day.GetDescription());
+        GenerateDocument(GetUsersWithoutLunchByDay, Users, day, yandexLocations);
+        WordBuilder.Build(day.GetDescription() + ".docx");
+        return this;
+    }
 
     public OrderBuilder AddOrdersFromWorksheet(string path, string worksheet)
     {
@@ -127,6 +144,68 @@ public class OrderBuilder
     {
         ExcelBuilder.Build(fileName);
         return this;
+    }
+    
+    private void GenerateDocument(Func<IEnumerable<User>, Days, Location, Location[], OrderTime, IEnumerable<User>> func,
+        IEnumerable<User> users, Days day, Location[]? locations)
+    {
+        foreach (var location in new [] {Location.Vosstaniya, Location.Tramvainaya, Location.Gagarina})
+        {
+            GenerateTable(func(users, day, location, locations, OrderTime.Morning), day, location.GetDescription() + "- Утро");
+            GenerateTable(func(users, day, location, locations, OrderTime.Day), day, location.GetDescription() + "- День");
+            GenerateTable(func(users, day, location, locations, OrderTime.Night), day, location.GetDescription() + "- Вечер");
+        }
+    }
+
+    private IEnumerable<Location> GetOtherLocations(Location[] currentArray)
+    {
+        var allLocations = new[] {Location.Tramvainaya, Location.Gagarina, Location.Vosstaniya};
+        return allLocations.Where(location => currentArray.All(arr => arr != location));
+    }
+    
+    private void GenerateTable(IEnumerable<User> users, Days day, string? title = null)
+    {
+        var usersArray = users as User[] ?? users.ToArray();
+        if (!usersArray.Any())
+            return;
+                
+        var userId = 1;
+        var tableBuilder = WordBuilder.CreateTable(title ?? "");
+        tableBuilder.AddToTable("№", "ФИО", "Что заказали");
+
+        foreach (var user in usersArray)
+        {
+            var order = user.Orders[(int) day];
+
+            var hotFoodText = order.HotFood is not null ? order.HotFood!.Value.GetDescription() : "";
+            var soupText = order.Soup is not null ? order.Soup!.Value.GetDescription() : "";
+            var bakeryText = order.Bakery is not null ? order.Bakery!.Value.GetDescription() : "";
+
+            var result = order.Lunch is not null 
+                ? order.Lunch.ToString() 
+                : $"{hotFoodText}\t{soupText}\t{bakeryText}";
+            
+            tableBuilder.AddToTable(userId.ToString(), user.Name!, result!);
+            userId++;
+        }
+    }
+
+    private IEnumerable<User> GetUsersWithoutLunchByDay(IEnumerable<User> users, Days day, Location location,
+        Location[] locations, OrderTime time)
+    {
+        var orderIndex = (int) day;
+        return users.Where(user => user.Location == location && user.Orders[orderIndex].OrderTime == time)
+            .Where(user => (user.Orders[orderIndex].Lunch is null && locations.Any(loc => loc == user.Location)) ||
+                           locations.All(loc => loc != user.Location));
+    }
+
+    private IEnumerable<User> GetUsersWithLunchByDay(IEnumerable<User> users, Days day, Location location,
+        Location[] locations, OrderTime time)
+    {
+        var orderIndex = (int) day;
+        return users.Where(user =>
+            user.Orders[orderIndex].Lunch is not null && locations.Any(loc => user.Location == loc) &&
+            user.Orders[orderIndex].OrderTime == time && user.Location == location);
     }
 
     private int GetFoodCountInLunch(string product, OrderTime orderTime, Days day, Location[]? yandexLocations = null)
