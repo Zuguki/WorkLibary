@@ -25,7 +25,14 @@ var builder = new OrderBuilder()
 
 builder
     .GenerateYandexDocument(Days.Tuesday, new[] {Location.Tramvainaya})
-    .GenerateYandexDocument(Days.Wednesday, new[] {Location.Tramvainaya})
     .GenerateKitchenDocument(Days.Tuesday, new[] {Location.Tramvainaya})
-    .GenerateKitchenDocument(Days.Wednesday, new[] {Location.Tramvainaya});
+    
+    .GenerateYandexDocument(Days.Wednesday, new[] {Location.Tramvainaya})
+    .GenerateKitchenDocument(Days.Wednesday, new[] {Location.Tramvainaya})
+    
+    .GenerateYandexDocument(Days.Thursday, new[] {Location.Tramvainaya})
+    .GenerateKitchenDocument(Days.Thursday, new[] {Location.Tramvainaya})
+    
+    .GenerateYandexDocument(Days.Friday, new[] {Location.Tramvainaya})
+    .GenerateKitchenDocument(Days.Friday, new[] {Location.Tramvainaya});
 
