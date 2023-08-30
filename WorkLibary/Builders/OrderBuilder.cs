@@ -11,17 +11,17 @@ public class OrderBuilder
     
     public List<User> Users = new();
     
-    public OrderBuilder GenerateYandexDocument(Days day, Location[]? yandexLocations)
+    public OrderBuilder GenerateYandexDocument(Days day, Location[]? yandexLocations, int dayIndex)
     {
-        WordBuilder.AddDocument(day.GetDescription());
+        WordBuilder.AddDocument(dayIndex + " " + day.GetDescription());
         GenerateDocument(GetUsersWithLunchByDay, Users, day, yandexLocations);
         WordBuilder.Build(day.GetDescription() + "Yandex.docx");
         return this;
     }
 
-    public OrderBuilder GenerateKitchenDocument(Days day, Location[]? yandexLocations)
+    public OrderBuilder GenerateKitchenDocument(Days day, Location[]? yandexLocations, int dayIndex)
     {
-        WordBuilder.AddDocument(day.GetDescription());
+        WordBuilder.AddDocument(dayIndex +  " " + day.GetDescription());
         GenerateDocument(GetUsersWithoutLunchByDay, Users, day, yandexLocations);
         WordBuilder.Build(day.GetDescription() + ".docx");
         return this;
@@ -51,14 +51,14 @@ public class OrderBuilder
         return this;
     }
 
-    public OrderBuilder GenerateForKitchen(Days day, Location[]? yandexLocations)
+    public OrderBuilder GenerateForKitchen(Days day, Location[]? yandexLocations, int dayIndex)
     {
         var pageBuilder = ExcelBuilder
             .AddPage(day.GetDescription() + " Заготовки")
             .SetTitles(needLunches: false);
         var row = 2;
 
-        pageBuilder.AddCell(1, 1, $"{day.GetDescription()}");
+        pageBuilder.AddCell(1, 1, $"{dayIndex} {day.GetDescription()}");
         pageBuilder.AddCell(1, 2, "Утро");
         pageBuilder.AddCell(1, 3, "День");
         pageBuilder.AddCell(1, 4, "Вечер");
@@ -84,14 +84,14 @@ public class OrderBuilder
         return this;
     }
 
-    public OrderBuilder GenerateForOrder(Days day, Location[]? yandexLocations)
+    public OrderBuilder GenerateForOrder(Days day, Location[]? yandexLocations, int dayIndex)
     {
         var pageBuilder = ExcelBuilder
             .AddPage(day.GetDescription() + " Заказ")
             .SetTitles();
         var row = 2;
 
-        pageBuilder.AddCell(1, 1, $"{day.GetDescription()}");
+        pageBuilder.AddCell(1, 1, $"{dayIndex} {day.GetDescription()}");
         pageBuilder.AddCell(1, 2, "Дневные");
         pageBuilder.AddCell(1, 3, "Вечерние");
         foreach (var product in ExcelReader.ReadCellsById(pageBuilder.Worksheet, 1, 2))

@@ -58,6 +58,6 @@ public abstract class StringConstants
     
     // Location
     public const string Gagarina = "Гагарина";
-    public const string Tramvainaya = "Трамвайная";
+    public const string Tramvainaya = "Трамвайный";
     public const string Vosstaniya = "Восстания";
 }
